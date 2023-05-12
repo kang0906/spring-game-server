@@ -1,6 +1,7 @@
 package com.example.game.config.jwt;
 
 import com.example.game.config.UserDetailsImpl;
+import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -45,9 +45,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-//        String jwtToken = getJwtToken(jwtHeader);
-//        String email = jwtTokenUtils.extractUserEmail(jwtToken);
-//        checkUser(email);
+        String jwtToken = getJwtToken(jwtHeader);
+        String email = jwtTokenUtils.extractUserEmail(jwtToken);
+        checkUser(email);
         chain.doFilter(request, response);
     }
 
@@ -65,16 +65,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return jwtHeader.replace(TOKEN_PREFIX, "");
     }
 
-//    public void checkUser(String email) {
-//        if (email != null) {
-//            User user = userRepository.findByEmail(email).orElse(null);
+    public void checkUser(String email) {
+        if (email != null) {
+            User user = userRepository.findByEmail(email).orElse(null);
 //            user.setVisitedTime(LocalDateTime.now());
 //            userRepository.save(user);
-//            UserDetails userDetails = new UserDetailsImpl(user);
-//            Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                    userDetails, null,
-//                    userDetails.getAuthorities());
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        }
-//    }
+            UserDetails userDetails = new UserDetailsImpl(user);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null,
+                    userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+    }
 }
