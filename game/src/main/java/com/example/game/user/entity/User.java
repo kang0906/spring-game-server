@@ -15,12 +15,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    @Column(unique = true)
     private String email;
-    private String kakaoId;
+
+    @Column(unique = true)
+    private Long kakaoId;
     private String username;
     private String password;
 
-    public User(String email, String kakaoId, String username, String password) {
+    public User(String email, Long kakaoId, String username, String password) {
         this.email = email;
         this.kakaoId = kakaoId;
         this.username = username;

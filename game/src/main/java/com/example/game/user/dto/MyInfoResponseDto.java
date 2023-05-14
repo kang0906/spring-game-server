@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class MyInfoResponseDto {
     private String email;
-    private String kakaoId;
+    private Long kakaoId;
     private String username;
 
     public MyInfoResponseDto(User user) {

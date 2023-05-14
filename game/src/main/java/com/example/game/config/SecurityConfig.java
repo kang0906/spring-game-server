@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST ,"/sign").permitAll()
                         .requestMatchers("/sign", "/sign/*").permitAll()
+                        .requestMatchers("/user/kakao/callback").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
