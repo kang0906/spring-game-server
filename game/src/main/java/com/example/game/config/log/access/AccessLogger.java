@@ -30,7 +30,8 @@ public class AccessLogger {
 
     private String buildAccessLog(HttpServletRequest request, HttpServletResponse response, long elapsed) {
 
-        String remoteHost = request.getRemoteHost(); // todo : ip 주소 조회 방식 수정 https://m.blog.naver.com/bb_/222844419943
+//        String remoteHost = request.getRemoteHost(); // ip 주소 조회 방식 수정 https://m.blog.naver.com/bb_/222844419943
+        String remoteHost = getClientIP(request);
         String method = request.getMethod();
         String url = getURL(request);
         int status = response.getStatus();
@@ -72,5 +73,31 @@ public class AccessLogger {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    public static String getClientIP(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+
+        if (ip == null || ip.length() == 0) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+
+        if (ip == null || ip.length() == 0) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+
+        if (ip == null || ip.length() == 0) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+
+        if (ip == null || ip.length() == 0) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+
+        if (ip == null || ip.length() == 0) {
+            ip = request.getRemoteAddr();
+        }
+
+        return ip;
     }
 }
