@@ -30,7 +30,7 @@ public class AccessLogger {
 
     private String buildAccessLog(HttpServletRequest request, HttpServletResponse response, long elapsed) {
 
-        String remoteHost = request.getRemoteHost();
+        String remoteHost = request.getRemoteHost(); // todo : ip 주소 조회 방식 수정 https://m.blog.naver.com/bb_/222844419943
         String method = request.getMethod();
         String url = getURL(request);
         int status = response.getStatus();
