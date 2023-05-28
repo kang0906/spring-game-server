@@ -20,7 +20,7 @@ public class AccessLogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         long stime = System.currentTimeMillis();
-        try {   // todo : 예외발생 상황 확인필요
+        try {
             chain.doFilter(request, response);
         } finally {
             long etime = System.currentTimeMillis();
