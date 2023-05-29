@@ -106,11 +106,11 @@ public class KakaoUserService {
             email = jsonNode.get("kakao_account")
                     .get("email").asText();
         }catch (Exception e){
-            log.info("kakao 로그인 email 조회부분 예외발생 ({}, getStackTrace() : {})\n ======================", e.toString() ,e.getStackTrace());
+            log.info("kakao 로그인 email 조회부분 예외발생 ({})\n\t getStackTrace() : {})", e.toString() ,e.getStackTrace());
 //            e.printStackTrace();
             email = id.toString();
         }
-        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
+        log.info("카카오 사용자 정보: {}, {}, {}", id, nickname, email);
         return new KakaoUserInfoDto(id, nickname, email);
     }
 
