@@ -41,3 +41,4 @@ out/
 **/message.properties
 **/src/test/resources/application.yml
 **/application.yml
+**/generated/
