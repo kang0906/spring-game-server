@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Table(name = "MEMBER")
@@ -22,11 +24,17 @@ public class User {
     private Long kakaoId;
     private String username;
     private String password;
+    private LocalDateTime joinDate;
+    private LocalDateTime lastAccessDate;
+
+
 
     public User(String email, Long kakaoId, String username, String password) {
         this.email = email;
         this.kakaoId = kakaoId;
         this.username = username;
         this.password = password;
+        this.joinDate = LocalDateTime.now();
+        this.lastAccessDate = LocalDateTime.now();
     }
 }
