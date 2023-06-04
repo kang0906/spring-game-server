@@ -1,23 +1,28 @@
-package com.example.game.coordinate.entity;
+package com.example.game.fleet.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Infra {
+public class Ship {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long infraId;
+    private Long shipId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coordinate_id")
-    private Coordinate coordinate;
+    @JoinColumn(name = "fleet_id")
+    private Fleet fleet;
 
-    private String name;
+    private String type;
 
+    private int attack;
+    private int hp;
+    private int maxHp;
+    private int capacity;
+    private int fuel;
 }

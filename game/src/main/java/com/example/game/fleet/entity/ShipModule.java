@@ -1,22 +1,21 @@
-package com.example.game.coordinate.entity;
+package com.example.game.fleet.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Coordinate {
+public class ShipModule {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mapId;
+    private Long shipModuleId;
 
-    private Long xPos;
-    private Long yPos;
+    private String moduleType;
 }
