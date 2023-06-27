@@ -1,13 +1,12 @@
 package com.example.game.coordinate.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,4 +18,8 @@ public class Coordinate {
 
     private Long xPos;
     private Long yPos;
+
+    @Embedded
+    private Resources resources;
+    private LocalDateTime updateAt;
 }
