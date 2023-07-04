@@ -3,6 +3,11 @@ package com.example.game.user.service;
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
+import com.example.game.coordinate.entity.Coordinate;
+import com.example.game.coordinate.entity.Resources;
+import com.example.game.coordinate.repository.coordinate.CoordinateRepository;
+import com.example.game.coordinate.service.CoordinateService;
+import com.example.game.fleet.service.FleetService;
 import com.example.game.user.dto.MyInfoResponseDto;
 import com.example.game.user.dto.RequestLogin;
 import com.example.game.user.entity.User;
@@ -20,6 +25,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CoordinateService coordinateService;
+    private final FleetService fleetService;
 
     public void signup(RequestLogin requestLogin) {
         Optional<User> findUser = userRepository.findByEmail(requestLogin.getEmail());
@@ -34,5 +41,13 @@ public class UserService {
 
     public ResponseDto<MyInfoResponseDto> getMyInfo(User user) {
         return ResponseDto.success(new MyInfoResponseDto(user));
+    }
+
+    public User setNewUser(User newUser) {
+        Coordinate coordinate = coordinateService.makeCoordinateForNewUser();
+
+        fleetService.makeFleetForNewUser(newUser, coordinate);
+
+        return newUser;
     }
 }

@@ -26,5 +26,9 @@ public class Fleet {
 
     private String fleetName;
 
-
+    public Fleet(User user, Coordinate coordinate, String fleetName) {
+        this.user = user;
+        this.coordinate = coordinate;
+        this.fleetName = fleetName;
+    }
 }

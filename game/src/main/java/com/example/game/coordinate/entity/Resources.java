@@ -11,4 +11,9 @@ import lombok.NoArgsConstructor;
 public class Resources {
     private int titanium;
     private int gas;
+
+    public Resources(int titanium, int gas) {
+        this.titanium = titanium;
+        this.gas = gas;
+    }
 }

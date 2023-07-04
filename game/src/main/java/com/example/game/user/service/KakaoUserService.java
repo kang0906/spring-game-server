@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoUserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtTokenUtils jwtTokenUtils;
 
 
@@ -128,7 +129,8 @@ public class KakaoUserService {
             String email = kakaoUserInfo.getEmail();
             // role: 일반 사용자
             kakaoUser = new User(email, kakaoId, nickname, null);
-            userRepository.save(kakaoUser);
+            User newUser = userRepository.save(kakaoUser);
+            userService.setNewUser(newUser);
         }
         return kakaoUser;
     }

@@ -22,4 +22,11 @@ public class Coordinate {
     @Embedded
     private Resources resources;
     private LocalDateTime updateAt;
+
+    public Coordinate(Long xPos, Long yPos, Resources resources) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.resources = resources;
+        this.updateAt = LocalDateTime.now();
+    }
 }
