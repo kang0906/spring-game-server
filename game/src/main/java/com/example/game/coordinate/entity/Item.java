@@ -22,4 +22,9 @@ public class Item {
     private String itemName;
     private int amount;
 
+    public Item(Coordinate coordinate, String itemName, int amount) {
+        this.coordinate = coordinate;
+        this.itemName = itemName;
+        this.amount = amount;
+    }
 }

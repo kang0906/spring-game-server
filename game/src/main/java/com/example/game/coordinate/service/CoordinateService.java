@@ -1,8 +1,10 @@
 package com.example.game.coordinate.service;
 
 import com.example.game.coordinate.entity.Coordinate;
+import com.example.game.coordinate.entity.Item;
 import com.example.game.coordinate.entity.Resources;
 import com.example.game.coordinate.repository.coordinate.CoordinateRepository;
+import com.example.game.coordinate.repository.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -17,6 +19,7 @@ import java.util.Random;
 public class CoordinateService {
     private final MessageSource messageSource;
     private final CoordinateRepository coordinateRepository;
+    private final ItemRepository itemRepository;
     private Random random = new Random();
 
     public Long getRandumLong(){
@@ -39,7 +42,9 @@ public class CoordinateService {
         coordinate = new Coordinate(x, y, new Resources(100000, 40000));
         coordinate = coordinateRepository.save(coordinate);
 
-        // todo : 시설(광산,함선공장) or 아이템(생산시설 건설용) 생성
+        //아이템(생산시설 건설용) 생성
+        itemRepository.save(new Item(coordinate, "titanium", 10000));
+        itemRepository.save(new Item(coordinate, "gas", 5000));
 
         return coordinate;
     }
