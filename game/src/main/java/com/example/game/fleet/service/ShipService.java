@@ -16,21 +16,28 @@ public class ShipService {
 
     @Transactional
     public Ship makeScout(Fleet fleet,String name){
-        Ship newShip = new Ship(fleet, name, "Scout", 10, 10, 10);
+        Ship newShip = new Ship(fleet, name, "Scout", 1, 10, 10);
         newShip = shipRepository.save(newShip);
         return newShip;
     }
 
     @Transactional
     public Ship makeFrigate(Fleet fleet,String name){
-        Ship newShip = new Ship(fleet, name, "Frigate", 100, 100, 100);
+        Ship newShip = new Ship(fleet, name, "Frigate", 10, 100, 100);
         newShip = shipRepository.save(newShip);
         return newShip;
     }
 
     @Transactional
     public Ship makeDestroyer(Fleet fleet,String name){
-        Ship newShip = new Ship(fleet, name, "Destroyer", 1000, 1000, 1000);
+        Ship newShip = new Ship(fleet, name, "Destroyer", 100, 1000, 1000);
+        newShip = shipRepository.save(newShip);
+        return newShip;
+    }
+
+    @Transactional
+    public Ship makeCruiser(Fleet fleet,String name){
+        Ship newShip = new Ship(fleet, name, "Cruiser", 1000, 10000, 10000);
         newShip = shipRepository.save(newShip);
         return newShip;
     }
