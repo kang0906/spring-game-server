@@ -5,6 +5,7 @@ import com.example.game.coordinate.entity.Item;
 import com.example.game.coordinate.entity.Resources;
 import com.example.game.coordinate.repository.coordinate.CoordinateRepository;
 import com.example.game.coordinate.repository.item.ItemRepository;
+import com.example.game.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -47,5 +48,14 @@ public class CoordinateService {
         itemRepository.save(new Item(coordinate, "gas", 5000));
 
         return coordinate;
+    }
+
+    @Transactional
+    public boolean buildInfra(User user){
+        //좌표 소유여부 확인
+        //자원량 확인(락)
+        //자원감소
+        //시설 생성
+        return true;
     }
 }
