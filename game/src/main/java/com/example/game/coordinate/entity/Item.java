@@ -1,5 +1,7 @@
 package com.example.game.coordinate.entity;
 
+import com.example.game.common.exception.ErrorCode;
+import com.example.game.common.exception.GlobalException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,5 +28,12 @@ public class Item {
         this.coordinate = coordinate;
         this.itemName = itemName;
         this.amount = amount;
+    }
+
+    public void useItem(int amount){
+        if(this.amount < amount){
+            throw new GlobalException(ErrorCode.NOT_ENOUGH_ITEM);
+        }
+        this.amount -= amount;
     }
 }

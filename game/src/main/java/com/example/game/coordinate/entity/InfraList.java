@@ -16,8 +16,18 @@ public enum InfraList {
         this.gasCost = gasCost;
     }
 
-    private String name;
-    private int titaniumCost;
-    private int gasCost;
+    public static InfraList findByName(String name){
+        InfraList[] values = InfraList.values();
+        for (InfraList value : values) {
+            if(value.name.equals(name)){
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private final String name;
+    private final int titaniumCost;
+    private final int gasCost;
 
 }

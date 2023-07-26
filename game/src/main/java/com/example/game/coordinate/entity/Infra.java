@@ -20,4 +20,8 @@ public class Infra {
 
     private String name;
 
+    public Infra(Coordinate coordinate, String name){
+        this.coordinate = coordinate;
+        this.name = name;
+    }
 }
