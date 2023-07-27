@@ -67,7 +67,7 @@ public class CoordinateService {
         List<Item> coordinateItems = itemRepository.findAllByCoordinate(coordinate);
         InfraList infraBuildRequestData = InfraList.findByName(requestDto.getInfraName());
 
-        if (coordinateFleet.getUser().getUserId() != user.getUserId()) {
+        if (coordinateFleet==null || coordinateFleet.getUser().getUserId() != user.getUserId()) {
             throw new GlobalException(ErrorCode.CANT_EDIT);
         }
         //중복된 시설 확인
@@ -76,7 +76,8 @@ public class CoordinateService {
                 throw new GlobalException(ErrorCode.VALIDATION_FAIL);
             }
         }
-        //자원량 확인(락)
+        //자원량 확인
+        // todo : 자원 조회시 락 사용 고려
         for (Item item : coordinateItems) {
             if(item.getItemName().equals("titanium")){
                 item.useItem(infraBuildRequestData.getTitaniumCost());

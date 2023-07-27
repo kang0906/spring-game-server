@@ -31,6 +31,9 @@ public class Item {
     }
 
     public void useItem(int amount){
+        if(amount<0){
+            throw new GlobalException(ErrorCode.CAN_NOT_USE_NEGATIVE_NUMBER);
+        }
         if(this.amount < amount){
             throw new GlobalException(ErrorCode.NOT_ENOUGH_ITEM);
         }
