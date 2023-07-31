@@ -9,4 +9,5 @@ import java.util.List;
 public interface InfraRepository extends JpaRepository<Infra, Long>, InfraRepositoryCustom {
 
     List<Infra> findAllByCoordinate(Coordinate coordinate);
+    Infra findAllByCoordinateAndName(Coordinate coordinate,String name);
 }

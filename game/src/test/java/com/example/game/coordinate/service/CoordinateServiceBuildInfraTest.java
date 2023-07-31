@@ -110,9 +110,11 @@ class CoordinateServiceBuildInfraTest {
     }
 
     @Test
-    @DisplayName("권한없을시 예외발생 테스트")
+    @DisplayName("권한없을시 예외발생 테스트(좌표 미소유)")
     public void coordinateServiceBuildInfraNoAccessAuthorityTest(){
         Coordinate save = coordinateRepository.save(new Coordinate(coordinate.getXPos() + 1, 1L, new Resources(10000, 10000)));
         assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user,save.getMapId(), new BuildInfraRequestDto("titaniumQuarry")));
     }
+
+    // todo : 존재하지 않는 시설을 건설하려고 하는경우 테스트
 }
