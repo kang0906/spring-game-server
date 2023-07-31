@@ -16,10 +16,10 @@ public class CoordinateController {
 
     private final CoordinateService coordinateService;
 
-    @PostMapping("/coordinate/infra")
-    public boolean buildInfra(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BuildInfraRequestDto requestDto){
+    @PostMapping("/coordinate/{coordinateId}/infra")
+    public boolean buildInfra(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long coordinateId, @RequestBody BuildInfraRequestDto requestDto){
 
-        boolean result = coordinateService.buildInfra(userDetails.getUser(), requestDto);
+        boolean result = coordinateService.buildInfra(userDetails.getUser(),coordinateId , requestDto);
 
         return result;
     }

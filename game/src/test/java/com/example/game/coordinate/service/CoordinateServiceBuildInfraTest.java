@@ -14,7 +14,6 @@ import com.example.game.fleet.repository.fleet.FleetRepository;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.user.service.UserService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,7 +72,7 @@ class CoordinateServiceBuildInfraTest {
         //given => BeforeEach
 
         //when
-        boolean result = coordinateService.buildInfra(user, new BuildInfraRequestDto(coordinate.getMapId(), "titaniumQuarry"));
+        boolean result = coordinateService.buildInfra(user, coordinate.getMapId(), new BuildInfraRequestDto("titaniumQuarry"));
 
         //then
         List<Item> allByCoordinate = itemRepository.findAllByCoordinate(coordinate);
@@ -98,22 +97,22 @@ class CoordinateServiceBuildInfraTest {
             }
         }
         //when then
-        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user, new BuildInfraRequestDto(coordinate.getMapId(), "titaniumQuarry")));
+        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user,coordinate.getMapId(), new BuildInfraRequestDto("titaniumQuarry")));
     }
 
     @Test
     @DisplayName("중복건설시 예외발생 테스트")
     public void coordinateServiceBuildInfraDuplicateExceptionTest(){
         //given
-        coordinateService.buildInfra(user, new BuildInfraRequestDto(coordinate.getMapId(), "titaniumQuarry"));
+        coordinateService.buildInfra(user,coordinate.getMapId(), new BuildInfraRequestDto("titaniumQuarry"));
         //when then
-        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user, new BuildInfraRequestDto(coordinate.getMapId(), "titaniumQuarry")));
+        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user,coordinate.getMapId(), new BuildInfraRequestDto("titaniumQuarry")));
     }
 
     @Test
     @DisplayName("권한없을시 예외발생 테스트")
     public void coordinateServiceBuildInfraNoAccessAuthorityTest(){
         Coordinate save = coordinateRepository.save(new Coordinate(coordinate.getXPos() + 1, 1L, new Resources(10000, 10000)));
-        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user, new BuildInfraRequestDto(save.getMapId(), "titaniumQuarry")));
+        assertThrows(GlobalException.class,()-> coordinateService.buildInfra(user,save.getMapId(), new BuildInfraRequestDto("titaniumQuarry")));
     }
 }

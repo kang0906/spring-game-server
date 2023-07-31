@@ -58,9 +58,9 @@ public class CoordinateService {
     }
 
     @Transactional
-    public boolean buildInfra(User user, BuildInfraRequestDto requestDto){
+    public boolean buildInfra(User user, Long coordinateId, BuildInfraRequestDto requestDto){
         //좌표 소유여부 확인
-        Coordinate coordinate = coordinateRepository.findById(requestDto.getCoordinate())
+        Coordinate coordinate = coordinateRepository.findById(coordinateId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VALIDATION_FAIL));
         Fleet coordinateFleet = fleetRepository.findByCoordinate(coordinate);
         List<Infra> coordinateInfra = infraRepository.findAllByCoordinate(coordinate);
