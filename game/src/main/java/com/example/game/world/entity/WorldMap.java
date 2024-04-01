@@ -1,16 +1,16 @@
 package com.example.game.world.entity;
 
 import com.example.game.common.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WorldMap extends BaseEntity {
 
     @Id
@@ -18,8 +18,14 @@ public class WorldMap extends BaseEntity {
     private Long worldMapId;
 
     private String name;
-    private Long x_axis;
-    private Long y_axis;
-    private LocalDateTime updateAt;
+    @Column(name = "axis_x")
+    private Long axisX;
+    @Column(name = "axis_y")
+    private Long axisY;
 
+    public WorldMap(String name, Long axisX, Long axisY) {
+        this.name = name;
+        this.axisX = axisX;
+        this.axisY = axisY;
+    }
 }

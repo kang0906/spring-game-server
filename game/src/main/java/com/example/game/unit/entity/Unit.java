@@ -28,4 +28,8 @@ public class Unit extends BaseEntity {
     private int ap;
     private int dp;
 
+    public void move(WorldMap destination) {
+        worldMap = destination;
+    }
+
 }

@@ -12,6 +12,7 @@ public enum ErrorCode {
     ALREADY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "Command already in progress", "이미 수행중인 명령입니다."),
     DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "Data Not Found", "존재하지 않는 데이터 입니다."),
     CANT_EDIT(HttpStatus.BAD_REQUEST, "CUSTOMER_GROUP_01","수정 할 권한이 없습니다."),
+    DESTINATION_NOT_EMPTY(HttpStatus.BAD_REQUEST, "Destination Field is Not Empty","목적지에 다른 유닛이 이미 존재합니다."),
     NOT_ENOUGH_ITEM(HttpStatus.BAD_REQUEST,"Not enough item","아이템이 충분하지 않습니다."),
     CAN_NOT_USE_NEGATIVE_NUMBER(HttpStatus.BAD_REQUEST,"can not user negative number","0 이상만 사용할 수 있습니다."),
     NOT_VALID_USERNAME(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_04","이름이 유효하지 않습니다."),
