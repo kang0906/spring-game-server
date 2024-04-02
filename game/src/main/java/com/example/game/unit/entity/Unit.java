@@ -4,10 +4,13 @@ import com.example.game.common.entity.BaseEntity;
 import com.example.game.user.entity.User;
 import com.example.game.world.entity.WorldMap;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Unit extends BaseEntity {
 
     @Id
@@ -32,4 +35,13 @@ public class Unit extends BaseEntity {
         worldMap = destination;
     }
 
+    public Unit(User user, WorldMap worldMap, String name, String type, int hp, int ap, int dp) {
+        this.user = user;
+        this.worldMap = worldMap;
+        this.name = name;
+        this.type = type;
+        this.hp = hp;
+        this.ap = ap;
+        this.dp = dp;
+    }
 }

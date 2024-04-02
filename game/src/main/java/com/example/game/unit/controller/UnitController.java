@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class UnitController {
 
     private final UnitService unitService;
@@ -20,7 +19,6 @@ public class UnitController {
     @PostMapping("/unit/move")
     public ResponseDto<String> unitMove(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UnitMoveRequestDto requestDto) {
 
-        log.info("requestDto = {}", requestDto);
         unitService.unitMove(requestDto, userDetails.getUser());
 
         return ResponseDto.success("success");
