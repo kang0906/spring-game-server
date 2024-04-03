@@ -24,6 +24,11 @@ public class UnitService {
     @Transactional
     public boolean unitMove(UnitMoveRequestDto requestDto, User requestUser) {
 
+        // 이동 값이 (0,0) 일 경우 이동로직을 수행하지 않고 return
+        if (requestDto.getX() == 0 && requestDto.getY() == 0) {
+            return true;
+        }
+
         // 유닛이 요청한 유저의 소유인지 확인
         Unit unit = unitRepository.findById(requestDto.getUnitId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));

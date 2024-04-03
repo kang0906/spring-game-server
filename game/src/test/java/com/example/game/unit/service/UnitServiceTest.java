@@ -12,6 +12,8 @@ import com.example.game.world.repository.WorldMapRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,25 @@ class UnitServiceTest {
         assertThat(result).isTrue();
         assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(2L);
         assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(3L);
+    }
+
+    @DisplayName("유닛을 정상적으로 이동한다.")
+    @CsvSource({"0,0", "0,1", "1,0", "1,1", "0, -1", "-1, 0", "-1,-1", "1, -1", "-1,1"})
+    @ParameterizedTest
+    void unitMoveTestUseParameterize(Long moveX, Long moveY) {
+        // given
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 0L, 0L));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+
+        // when
+        boolean result = unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user);
+
+        // then
+        Unit findUnit = unitRepository.findById(unit.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
+        assertThat(result).isTrue();
+        assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(moveX);
+        assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(moveY);
     }
 
     @DisplayName("이미 다른 유닛이 있는 곳으로 이동을 시도할 경우 예외가 발생한다.")
