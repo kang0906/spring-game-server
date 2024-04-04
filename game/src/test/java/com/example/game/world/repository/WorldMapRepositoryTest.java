@@ -28,7 +28,6 @@ class WorldMapRepositoryTest {
         Assertions.assertThat(worldMap).isNotNull();
         Assertions.assertThat(worldMap.getAxisX()).isEqualTo(1L);
         Assertions.assertThat(worldMap.getAxisY()).isEqualTo(1L);
-
     }
 
 

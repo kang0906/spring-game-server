@@ -30,9 +30,16 @@ public class Unit extends BaseEntity {
     private int hp;
     private int ap;
     private int dp;
+    @Column(name = "axis_x")
+    private Long axisX;
+    @Column(name = "axis_y")
+    private Long axisY;
+
 
     public void move(WorldMap destination) {
         worldMap = destination;
+        axisX = destination.getAxisX();
+        axisY = destination.getAxisY();
     }
 
     public Unit(User user, WorldMap worldMap, String name, String type, int hp, int ap, int dp) {
