@@ -50,5 +50,7 @@ public class Unit extends BaseEntity {
         this.hp = hp;
         this.ap = ap;
         this.dp = dp;
+        axisX = worldMap.getAxisX();
+        axisY = worldMap.getAxisY();
     }
 }
