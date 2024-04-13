@@ -3,6 +3,7 @@ package com.example.game.config.jwt;
 import com.example.game.common.dto.ResponseLogin;
 import com.example.game.config.UserDetailsImpl;
 import com.example.game.user.dto.RequestLogin;
+import com.example.game.user.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,6 +48,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response, FilterChain chain, Authentication authResult) {
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authResult.getPrincipal();
+        User user = userDetailsImpl.getUser();
         String jwtToken = jwtTokenUtils.generateJwtToken(userDetailsImpl);
 
         ResponseCookie cookie = ResponseCookie.from("accessToken", jwtToken)
@@ -61,6 +63,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .success(true)
                 .message("Login Success")
                 .token(jwtToken)
+                .x(user.getLastLocationX())
+                .y(user.getLastLocationY())
                 .build();
         try {
             response.getWriter().write(objectMapper.writeValueAsString(loginSuccess));

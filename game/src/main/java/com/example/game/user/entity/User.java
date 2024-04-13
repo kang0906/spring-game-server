@@ -28,6 +28,9 @@ public class User {
     private String password;
     private LocalDateTime joinDate;
     private LocalDateTime lastAccessDate;
+    private Long lastLocationX;
+    private Long lastLocationY;
+
 
 
 
