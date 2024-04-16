@@ -37,7 +37,8 @@ public class UnitService {
         }
 
         // 이동가능한 위치인지(이동 거리) 확인
-        if (requestDto.getY() > 1 || requestDto.getX() > 1) {
+        if (requestDto.getY() > 1 || requestDto.getX() > 1
+                || requestDto.getY() < -1 || requestDto.getX() < -1) {
            throw new GlobalException(VALIDATION_FAIL);
         }
 
