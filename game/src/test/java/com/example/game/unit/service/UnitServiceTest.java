@@ -91,6 +91,21 @@ class UnitServiceTest {
 
     }
 
+    @DisplayName("이동범위 밖으로 이동을 시도할 경우 예외가 발생한다.")
+    @CsvSource({"0,2", "2,0", "2,2", "0, -2", "-2, 0", "-2,-2", "2, -2", "-2,2"})
+    @ParameterizedTest
+    void unitMoveRangeParameterizedTest(Long moveX, Long moveY) {
+        // given
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+
+        // when then
+        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ErrorCode.VALIDATION_FAIL.getMessage());
+    }
+
     @DisplayName("x 좌표의 이동범위 밖으로 이동을 시도할 경우 예외가 발생한다.")
     @Test
     void unitMoveRangeTest1() {
