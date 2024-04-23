@@ -1,6 +1,7 @@
 package com.example.game.unit.repository;
 
 import com.example.game.unit.entity.Unit;
+import com.example.game.unit.entity.UnitType;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
@@ -87,7 +88,7 @@ class UnitRepositoryTest {
 
     private Unit makeUnit(User user, long x, long y, String unitName) {
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", x, y));
-        return unitRepository.save(new Unit(user, worldMap, unitName, "", 100, 10, 1));
+        return unitRepository.save(new Unit(user, worldMap, unitName, UnitType.INFANTRY, 100, 10, 1));
     }
 
 }

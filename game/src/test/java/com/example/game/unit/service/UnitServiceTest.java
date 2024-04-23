@@ -4,6 +4,7 @@ import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.unit.dto.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
+import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.game.unit.entity.UnitType.INFANTRY;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +43,7 @@ class UnitServiceTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when
         boolean result = unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user);
@@ -60,7 +62,7 @@ class UnitServiceTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 0L, 0L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when
         boolean result = unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user);
@@ -81,8 +83,8 @@ class UnitServiceTest {
 
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
         WorldMap worldMap2 = worldMapRepository.save(new WorldMap("", 2L, 3L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
-        Unit unit2 = unitRepository.save(new Unit(user, worldMap2, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
+        Unit unit2 = unitRepository.save(new Unit(user, worldMap2, "", INFANTRY, 100, 10, 1));
 
         // when then
         assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user))
@@ -98,7 +100,7 @@ class UnitServiceTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when then
         assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user))
@@ -112,7 +114,7 @@ class UnitServiceTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when then
         assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 2L, 1L), user))
@@ -126,7 +128,7 @@ class UnitServiceTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        Unit unit = unitRepository.save(new Unit(user, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when then
         assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 2L), user))
@@ -141,7 +143,7 @@ class UnitServiceTest {
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        Unit unit = unitRepository.save(new Unit(user2, worldMap, "", "", 100, 10, 1));
+        Unit unit = unitRepository.save(new Unit(user2, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when then
         assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user))

@@ -26,7 +26,7 @@ public class Unit extends BaseEntity {
     private WorldMap worldMap;
 
     private String name;
-    private String type;
+    private UnitType type;
     private int hp;
     private int ap;
     private int dp;
@@ -42,7 +42,7 @@ public class Unit extends BaseEntity {
         axisY = destination.getAxisY();
     }
 
-    public Unit(User user, WorldMap worldMap, String name, String type, int hp, int ap, int dp) {
+    public Unit(User user, WorldMap worldMap, String name, UnitType type, int hp, int ap, int dp) {
         this.user = user;
         this.worldMap = worldMap;
         this.name = name;
