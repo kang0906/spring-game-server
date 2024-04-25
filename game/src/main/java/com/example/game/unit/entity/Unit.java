@@ -26,6 +26,8 @@ public class Unit extends BaseEntity {
     private WorldMap worldMap;
 
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private UnitType type;
     private int hp;
     private int ap;
@@ -40,6 +42,10 @@ public class Unit extends BaseEntity {
         worldMap = destination;
         axisX = destination.getAxisX();
         axisY = destination.getAxisY();
+    }
+
+    public void takeAttackFrom(Unit unit) {
+        this.hp -= unit.ap;
     }
 
     public Unit(User user, WorldMap worldMap, String name, UnitType type, int hp, int ap, int dp) {

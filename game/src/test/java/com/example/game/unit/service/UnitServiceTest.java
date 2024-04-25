@@ -46,11 +46,10 @@ class UnitServiceTest {
         Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when
-        boolean result = unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user);
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user);
 
         // then
         Unit findUnit = unitRepository.findById(unit.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
-        assertThat(result).isTrue();
         assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(2L);
         assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(3L);
     }
@@ -65,11 +64,10 @@ class UnitServiceTest {
         Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when
-        boolean result = unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user);
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), moveX, moveY), user);
 
         // then
         Unit findUnit = unitRepository.findById(unit.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
-        assertThat(result).isTrue();
         assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(moveX);
         assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(moveY);
     }

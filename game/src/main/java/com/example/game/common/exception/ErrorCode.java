@@ -16,6 +16,7 @@ public enum ErrorCode {
     NOT_ENOUGH_ITEM(HttpStatus.BAD_REQUEST,"Not enough item","아이템이 충분하지 않습니다."),
     CAN_NOT_USE_NEGATIVE_NUMBER(HttpStatus.BAD_REQUEST,"can not user negative number","0 이상만 사용할 수 있습니다."),
     NOT_VALID_USERNAME(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_04","이름이 유효하지 않습니다."),
+    OUT_OF_RANGE(HttpStatus.BAD_REQUEST,"out of range","범위를 초과했습니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "USER_01", "존재하는 이메일 입니다."),
     TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "USER_02", "토큰 유효시간이 지났습니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "USER_03", "유효하지 않는 토큰입니다."),
