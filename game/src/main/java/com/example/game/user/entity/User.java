@@ -32,8 +32,6 @@ public class User {
     private Long lastLocationY;
 
 
-
-
     public User(String email, Long kakaoId, String username, String password) {
         this.email = email;
         this.kakaoId = kakaoId;
@@ -41,5 +39,11 @@ public class User {
         this.password = password;
         this.joinDate = LocalDateTime.now();
         this.lastAccessDate = LocalDateTime.now();
+    }
+
+    public void setLastLocation(Long x, Long y) {
+        this.lastLocationX = x;
+        this.lastLocationY = y;
+
     }
 }

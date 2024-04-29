@@ -25,7 +25,10 @@ public class UserService {
         Optional<User> findUser = userRepository.findByEmail(requestLogin.getEmail());
         if (!findUser.isPresent()) {
             User user = new User(requestLogin.getEmail(), null, requestLogin.getUsername(), bCryptPasswordEncoder.encode(requestLogin.getPassword()));
+
             // todo : 유저 계정 생성 및 초기 세팅(건물, 유닛, 스폰위치 등)
+            user.setLastLocation(0L, 0L);   // todo : 유저 초기 세팅으로 수정
+
             userRepository.save(user);
             setNewUser(user);
         } else {
