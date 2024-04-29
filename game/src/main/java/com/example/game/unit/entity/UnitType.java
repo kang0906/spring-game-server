@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum UnitType {
 
-    INFANTRY("보병", 100, 10, 0, 1),
-    ARTILLERY("포병", 40, 15, 0, 3),
-    CAVALRY("기병", 200, 20, 0, 1)
+    INFANTRY("infantry", 100, 10, 0, 1, 500),
+    ARTILLERY("artillery", 40, 15, 0, 3, 200),
+    CAVALRY("cavalry", 200, 20, 0, 1, 300)
     ;
 
     private String name;
@@ -15,12 +15,14 @@ public enum UnitType {
     private int ap;
     private int dp;
     private int range;
+    private int itemCapacity;
 
-    UnitType(String name, int maxHp, int ap, int dp, int range) {
+    UnitType(String name, int maxHp, int ap, int dp, int range, int itemCapacity) {
         this.name = name;
         this.maxHp = maxHp;
         this.ap = ap;
         this.dp = dp;
         this.range = range;
+        this.itemCapacity = itemCapacity;
     }
 }
