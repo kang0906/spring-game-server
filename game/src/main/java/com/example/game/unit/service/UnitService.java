@@ -68,9 +68,17 @@ public class UnitService {
         // 공격 범위 확인 (UnitType Enum 으로 범위 확인)
         checkUnitRange(unit, targetUnit);
 
+        checkFriendlyFire(unit, targetUnit);
+
         // 공격 수행
         targetUnit.takeAttackFrom(unit);
 
+    }
+
+    private void checkFriendlyFire(Unit unit, Unit targetUnit) {
+        if (unit.getUser().getUserId() == targetUnit.getUser().getUserId()) {
+            throw new GlobalException(FRIENDLY_FIRE_NOT_ALLOWED);
+        }
     }
 
     private Unit checkUnitOwner(Long unitId, User requestUser) {

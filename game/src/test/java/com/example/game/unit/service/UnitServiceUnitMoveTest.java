@@ -4,13 +4,11 @@ import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.unit.dto.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
-import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,11 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.game.unit.entity.UnitType.INFANTRY;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class UnitServiceTest {
+class UnitServiceUnitMoveTest {
 
     @Autowired
     private UnitService unitService;
