@@ -52,14 +52,38 @@ class UnitServiceUnitAttackTest {
                 new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
 
         Unit unit2 = unitRepository.save(
-                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
+                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getAp() + 1, INFANTRY.getAp(), INFANTRY.getDp()));
 
         // when
         unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user);
 
         // then
         Unit findUnit = unitRepository.findById(unit2.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
-        assertThat(findUnit.getHp()).isEqualTo(INFANTRY.getMaxHp() - INFANTRY.getAp());
+        assertThat(findUnit.getHp()).isEqualTo(INFANTRY.getAp() + 1 - INFANTRY.getAp());
+    }
+
+    @DisplayName("공격을 받은 유닛의 체력이 0 이하가 되면 해당 유닛은 삭제된다.")
+    @Test
+    void unitAttackAndTargetDeleteTest() {
+        // given
+        User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
+        WorldMap worldMap1 = worldMapRepository.save(new WorldMap("", -1L, -2L));
+        Unit unit1 = unitRepository.save(
+                new Unit(user, worldMap1, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
+
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap2 = worldMapRepository.save(
+                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
+
+        Unit unit2 = unitRepository.save(
+                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getAp(), INFANTRY.getAp(), INFANTRY.getDp()));
+
+        // when
+        unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user);
+
+        // then
+        Unit findUnit = unitRepository.findById(unit2.getUnitId()).orElse(null);
+        assertThat(findUnit).isNull();
     }
 
     @DisplayName("유닛을 정상적으로 공격한다.")

@@ -10,6 +10,7 @@ import com.example.game.user.entity.User;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import static com.example.game.common.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class UnitService {
 
     private final UnitRepository unitRepository;
@@ -72,6 +74,11 @@ public class UnitService {
 
         // 공격 수행
         targetUnit.takeAttackFrom(unit);
+
+        if(targetUnit.getHp() <= 0) {
+            log.info("unit {} deleted(owner {})", targetUnit.getUnitId(), targetUnit.getUser().getUserId());
+            unitRepository.delete(targetUnit);
+        }
 
     }
 
