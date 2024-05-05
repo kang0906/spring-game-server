@@ -100,14 +100,15 @@ public class UnitService {
     private void checkUnitRange(Unit unit, Unit targetUnit) {
         int range = unit.getType().getRange();
 
-        int x = (int) (unit.getAxisX() - targetUnit.getAxisX());
-        int y = (int) (unit.getAxisY() - targetUnit.getAxisY());
+        int x = (int) (Math.abs(unit.getAxisX()) - Math.abs(targetUnit.getAxisX()));
+        int y = (int) (Math.abs(unit.getAxisY()) - Math.abs(targetUnit.getAxisY()));
 
-        if (range < x || range * (-1) > x) {
-            throw new GlobalException(OUT_OF_RANGE);
-        }
+        x = Math.abs(x);
+        y = Math.abs(y);
 
-        if (range < y || range * (-1) > y) {
+        log.info("checkUnitRange : ({}, {})", x, y);
+
+        if (range < x + y) {
             throw new GlobalException(OUT_OF_RANGE);
         }
     }

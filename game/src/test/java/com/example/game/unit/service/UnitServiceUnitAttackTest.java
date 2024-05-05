@@ -87,7 +87,7 @@ class UnitServiceUnitAttackTest {
     }
 
     @DisplayName("유닛을 정상적으로 공격한다.")
-    @CsvSource({"0,0", "0,1", "1,0", "1,1", "0, -1", "-1, 0", "-1,-1", "1, -1", "-1,1"})
+    @CsvSource({"0,1", "1,0", "0, -1", "-1, 0"})
     @ParameterizedTest
     void unitAttackTestUseParameterize(Long x, Long y) {
         // given
@@ -98,7 +98,7 @@ class UnitServiceUnitAttackTest {
 
         User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
         WorldMap worldMap2 = worldMapRepository.save(
-                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
+                new WorldMap("", worldMap1.getAxisX() + x, worldMap1.getAxisY() + y));
 
         Unit unit2 = unitRepository.save(
                 new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
@@ -112,7 +112,7 @@ class UnitServiceUnitAttackTest {
     }
 
     @DisplayName("공격범위 밖의 유닛을 공격하려고 시도할 경우 예외가 발생한다.")
-    @CsvSource({"0,2", "2,0", "2,2", "0, -2", "-2, 0", "-2,-2", "2, -2", "-2,2"})
+    @CsvSource({"0,2", "2,0", "2,2", "0, -2", "-2, 0", "-2,-2", "2, -2", "-2,2", "-1,-1", "1, -1", "-1,1", "1,1"})
     @ParameterizedTest
     void unitAttackRangeParameterizedTest(Long x, Long y) {
         User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
