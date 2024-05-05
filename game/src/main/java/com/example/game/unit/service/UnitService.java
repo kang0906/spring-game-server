@@ -1,6 +1,5 @@
 package com.example.game.unit.service;
 
-import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.unit.dto.UnitAttackRequestDto;
 import com.example.game.unit.dto.UnitMoveRequestDto;
@@ -34,8 +33,16 @@ public class UnitService {
         }
 
         // 이동가능한 위치인지(이동 거리) 확인
-        if (requestDto.getY() > 1 || requestDto.getX() > 1
-                || requestDto.getY() < -1 || requestDto.getX() < -1) {
+
+        int x = (int)(long)requestDto.getX();
+        int y = (int)(long)requestDto.getY();
+
+        x = Math.abs(x);
+        y = Math.abs(y);
+
+        log.info("checkUnitRange : ({}, {})", x, y);
+
+        if (1 < x + y) {
             throw new GlobalException(VALIDATION_FAIL);
         }
 
@@ -68,7 +75,7 @@ public class UnitService {
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
         // 공격 범위 확인 (UnitType Enum 으로 범위 확인)
-        checkUnitRange(unit, targetUnit);
+        checkUnitAttackRange(unit, targetUnit);
 
         checkFriendlyFire(unit, targetUnit);
 
@@ -97,7 +104,7 @@ public class UnitService {
         return unit;
     }
 
-    private void checkUnitRange(Unit unit, Unit targetUnit) {
+    private void checkUnitAttackRange(Unit unit, Unit targetUnit) {
         int range = unit.getType().getRange();
 
         int x = (int) (Math.abs(unit.getAxisX()) - Math.abs(targetUnit.getAxisX()));
@@ -105,8 +112,6 @@ public class UnitService {
 
         x = Math.abs(x);
         y = Math.abs(y);
-
-        log.info("checkUnitRange : ({}, {})", x, y);
 
         if (range < x + y) {
             throw new GlobalException(OUT_OF_RANGE);

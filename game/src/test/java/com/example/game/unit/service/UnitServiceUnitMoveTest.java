@@ -43,16 +43,16 @@ class UnitServiceUnitMoveTest {
         Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when
-        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user);
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user);
 
         // then
         Unit findUnit = unitRepository.findById(unit.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
         assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(2L);
-        assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(3L);
+        assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(2L);
     }
 
     @DisplayName("유닛을 정상적으로 이동한다.")
-    @CsvSource({"0,0", "0,1", "1,0", "1,1", "0, -1", "-1, 0", "-1,-1", "1, -1", "-1,1"})
+    @CsvSource({"0,0", "0,1", "1,0", "0, -1", "-1, 0"})
     @ParameterizedTest
     void unitMoveTestUseParameterize(Long moveX, Long moveY) {
         // given
@@ -77,19 +77,19 @@ class UnitServiceUnitMoveTest {
         User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
 
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
-        WorldMap worldMap2 = worldMapRepository.save(new WorldMap("", 2L, 3L));
+        WorldMap worldMap2 = worldMapRepository.save(new WorldMap("", 2L, 2L));
         Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY, 100, 10, 1));
         Unit unit2 = unitRepository.save(new Unit(user, worldMap2, "", INFANTRY, 100, 10, 1));
 
         // when then
-        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user))
+        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ErrorCode.DESTINATION_NOT_EMPTY.getMessage());
 
     }
 
     @DisplayName("이동범위 밖으로 이동을 시도할 경우 예외가 발생한다.")
-    @CsvSource({"0,2", "2,0", "2,2", "0, -2", "-2, 0", "-2,-2", "2, -2", "-2,2"})
+    @CsvSource({"0,2", "2,0", "2,2", "0, -2", "-2, 0", "-2,-2", "2, -2", "-2,2", "-1,-1", "1, -1", "-1,1", "1,1"})
     @ParameterizedTest
     void unitMoveRangeParameterizedTest(Long moveX, Long moveY) {
         // given
@@ -141,7 +141,7 @@ class UnitServiceUnitMoveTest {
         Unit unit = unitRepository.save(new Unit(user2, worldMap, "", INFANTRY, 100, 10, 1));
 
         // when then
-        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 1L), user))
+        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ErrorCode.CANT_EDIT.getMessage());
     }
