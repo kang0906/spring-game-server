@@ -15,4 +15,5 @@ public class WorldMapLoadResponseDto {
 
     private long userId;
     private List<WorldMapUnitResponseDto> worldMapUnitDtoList;
+    private List<WorldMapFacilityResponseDto> worldMapFacilityList;
 }

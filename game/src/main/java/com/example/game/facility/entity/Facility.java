@@ -43,4 +43,8 @@ public class Facility extends BaseEntity {
         this.axisX = worldMap.getAxisX();
         this.axisY = worldMap.getAxisY();
     }
+
+    public void updateFacilityStatus() {
+        // todo : 구현 (엔티티 코드 구현 시 상속을 사용할지 고려해볼것 : 다형성)
+    }
 }
