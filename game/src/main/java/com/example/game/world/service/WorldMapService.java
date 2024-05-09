@@ -42,6 +42,15 @@ public class WorldMapService {
                         .toList()
         );
 
+        // todo :  자신의 유닛 정보만 반환하도록 수정
+        List<WorldMapUnitResponseDto> worldMapUnitDtoList = data.getWorldMapUnitDtoList();
+
+        for (WorldMapUnitResponseDto worldMapUnitResponseDto : worldMapUnitDtoList) {
+            if(user.getUserId() != worldMapUnitResponseDto.getUserId()) {
+                worldMapUnitResponseDto.makeUnknown();
+            }
+        }
+
         return ResponseDto.success(data);
     }
 }
