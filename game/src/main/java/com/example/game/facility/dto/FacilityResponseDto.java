@@ -1,4 +1,4 @@
-package com.example.game.world.dto;
+package com.example.game.facility.dto;
 
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityType;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorldMapFacilityResponseDto {
+public class FacilityResponseDto {
 
     private Long facilityId;
     private Long userId;
@@ -20,7 +20,7 @@ public class WorldMapFacilityResponseDto {
     private Long axisX;
     private Long axisY;
 
-    public WorldMapFacilityResponseDto(Facility facility) {
+    public FacilityResponseDto(Facility facility) {
         this.facilityId = facility.getFacilityId();
         this.userId = facility.getUser().getUserId();
         this.name = facility.getName();

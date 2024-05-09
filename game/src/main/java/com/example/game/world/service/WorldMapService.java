@@ -6,17 +6,19 @@ import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
-import com.example.game.world.dto.WorldMapFacilityResponseDto;
+import com.example.game.facility.dto.FacilityResponseDto;
 import com.example.game.world.dto.WorldMapLoadRequestDto;
 import com.example.game.world.dto.WorldMapLoadResponseDto;
-import com.example.game.world.dto.WorldMapUnitResponseDto;
+import com.example.game.unit.dto.UnitResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class WorldMapService {
 
     private final UnitRepository unitRepository;
@@ -35,17 +37,16 @@ public class WorldMapService {
         WorldMapLoadResponseDto data = new WorldMapLoadResponseDto(
                 user.getUserId(),
                 allUnitByAxisBetween.stream()
-                        .map(WorldMapUnitResponseDto::new)
+                        .map(UnitResponseDto::new)
                         .toList(),
                 allFacilityByAxisBetween.stream()
-                        .map(WorldMapFacilityResponseDto::new)
+                        .map(FacilityResponseDto::new)
                         .toList()
         );
 
-        // todo :  자신의 유닛 정보만 반환하도록 수정
-        List<WorldMapUnitResponseDto> worldMapUnitDtoList = data.getWorldMapUnitDtoList();
+        List<UnitResponseDto> worldMapUnitDtoList = data.getWorldMapUnitDtoList();
 
-        for (WorldMapUnitResponseDto worldMapUnitResponseDto : worldMapUnitDtoList) {
+        for (UnitResponseDto worldMapUnitResponseDto : worldMapUnitDtoList) {
             if(user.getUserId() != worldMapUnitResponseDto.getUserId()) {
                 worldMapUnitResponseDto.makeUnknown();
             }

@@ -1,5 +1,7 @@
 package com.example.game.world.dto;
 
+import com.example.game.facility.dto.FacilityResponseDto;
+import com.example.game.unit.dto.UnitResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,6 @@ import java.util.List;
 public class WorldMapLoadResponseDto {
 
     private long userId;
-    private List<WorldMapUnitResponseDto> worldMapUnitDtoList;
-    private List<WorldMapFacilityResponseDto> worldMapFacilityList;
+    private List<UnitResponseDto> worldMapUnitDtoList;
+    private List<FacilityResponseDto> worldMapFacilityList;
 }

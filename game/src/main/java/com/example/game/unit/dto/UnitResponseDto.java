@@ -1,4 +1,4 @@
-package com.example.game.world.dto;
+package com.example.game.unit.dto;
 
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitType;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorldMapUnitResponseDto {
+public class UnitResponseDto {
     private Long unitId;
     private Long userId;
     private String name;
@@ -30,7 +30,7 @@ public class WorldMapUnitResponseDto {
         this.dp = -1;
     }
 
-    public WorldMapUnitResponseDto(Unit unit) {
+    public UnitResponseDto(Unit unit) {
         this.unitId = unit.getUnitId();
         this.userId = unit.getUser().getUserId();
         this.name = unit.getName();

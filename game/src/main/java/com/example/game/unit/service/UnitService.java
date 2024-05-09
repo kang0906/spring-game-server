@@ -1,8 +1,11 @@
 package com.example.game.unit.service;
 
+import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.unit.dto.UnitAttackRequestDto;
+import com.example.game.unit.dto.UnitAttackResponseDto;
 import com.example.game.unit.dto.UnitMoveRequestDto;
+import com.example.game.unit.dto.UnitResponseDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -67,7 +70,7 @@ public class UnitService {
     }
 
     @Transactional
-    public void unitAttack(UnitAttackRequestDto requestDto, User requestUser) {
+    public UnitAttackResponseDto unitAttack(UnitAttackRequestDto requestDto, User requestUser) {
 
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
 
@@ -87,6 +90,7 @@ public class UnitService {
             unitRepository.delete(targetUnit);
         }
 
+        return new UnitAttackResponseDto(new UnitResponseDto(unit), new UnitResponseDto(targetUnit));
     }
 
     private void checkFriendlyFire(Unit unit, Unit targetUnit) {
