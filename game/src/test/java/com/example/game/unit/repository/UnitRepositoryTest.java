@@ -88,7 +88,7 @@ class UnitRepositoryTest {
 
     private Unit makeUnit(User user, long x, long y, String unitName) {
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", x, y));
-        return unitRepository.save(new Unit(user, worldMap, unitName, UnitType.INFANTRY, 100, 10, 1));
+        return unitRepository.save(new Unit(user, worldMap, unitName, UnitType.INFANTRY));
     }
 
 }

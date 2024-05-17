@@ -59,4 +59,16 @@ public class Unit extends BaseEntity {
         axisX = worldMap.getAxisX();
         axisY = worldMap.getAxisY();
     }
+
+    public Unit(User user, WorldMap worldMap, String name, UnitType type) {
+        this.user = user;
+        this.worldMap = worldMap;
+        this.name = name;
+        this.type = type;
+        this.hp = type.getMaxHp();
+        this.ap = type.getAp();
+        this.dp = type.getDp();
+        axisX = worldMap.getAxisX();
+        axisY = worldMap.getAxisY();
+    }
 }

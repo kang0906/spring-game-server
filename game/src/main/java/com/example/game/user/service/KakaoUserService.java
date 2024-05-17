@@ -5,22 +5,20 @@ import com.example.game.config.jwt.JwtTokenUtils;
 import com.example.game.user.dto.KakaoUserInfoDto;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
+import com.example.game.world.entity.WorldMap;
+import com.example.game.world.service.WorldMapService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +26,15 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class KakaoUserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final WorldMapService worldMapService;
     private final JwtTokenUtils jwtTokenUtils;
 
-
+    @Transactional
     public String kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
@@ -129,8 +129,12 @@ public class KakaoUserService {
             String email = kakaoUserInfo.getEmail();
             // role: 일반 사용자
             kakaoUser = new User(email, kakaoId, nickname, null);
+
+            WorldMap spawnPosition = worldMapService.findSpawnPosition(kakaoUser.getEmail());
+            kakaoUser.setLastLocation(spawnPosition.getAxisX(), spawnPosition.getAxisY());
+
             User newUser = userRepository.save(kakaoUser);
-            userService.setNewUser(newUser);
+            userService.setNewUser(newUser, spawnPosition);
         }
         return kakaoUser;
     }
