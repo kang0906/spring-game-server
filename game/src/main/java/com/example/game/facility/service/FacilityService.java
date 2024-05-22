@@ -46,6 +46,8 @@ public class FacilityService {
             throw new GlobalException(ErrorCode.DESTINATION_NOT_EMPTY);
         }
 
+        // 유닛의 아이템 소모
+
         Facility save = facilityRepository.save(new Facility(user, worldMap, requestDto.getFacilityType(), FacilityType.valueOf(requestDto.getFacilityType())));
 
         return ResponseDto.success(new FacilityResponseDto(save));

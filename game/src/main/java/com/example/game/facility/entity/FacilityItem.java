@@ -20,5 +20,8 @@ public class FacilityItem extends Item {
     @JoinColumn(name = "facility_id")
     private Facility facility;
 
-
+    public FacilityItem(ItemType itemType, int quantity, Facility facility) {
+        super(itemType, quantity);
+        this.facility = facility;
+    }
 }

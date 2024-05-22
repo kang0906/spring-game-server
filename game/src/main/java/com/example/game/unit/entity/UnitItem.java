@@ -20,5 +20,8 @@ public class UnitItem extends Item {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-
+    public UnitItem(Unit unit, ItemType itemType, int quantity) {
+        super(itemType, quantity);
+        this.unit = unit;
+    }
 }
