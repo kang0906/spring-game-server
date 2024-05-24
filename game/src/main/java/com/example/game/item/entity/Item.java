@@ -17,8 +17,13 @@ public abstract class Item extends BaseEntity {
     private ItemType itemType;
     private int quantity;
 
-    public Item(ItemType itemType, int quantity) {
+    protected Item(ItemType itemType, int quantity) {
         this.itemType = itemType;
         this.quantity = quantity;
+    }
+
+    public int useItem(int quantity) {
+        this.quantity -= quantity;
+        return this.quantity;
     }
 }

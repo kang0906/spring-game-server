@@ -8,7 +8,10 @@ import com.example.game.facility.dto.FacilityResponseDto;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityType;
 import com.example.game.facility.repository.FacilityRepository;
+import com.example.game.item.entity.ItemType;
 import com.example.game.unit.entity.Unit;
+import com.example.game.unit.entity.UnitItem;
+import com.example.game.unit.repository.UnitItemRepository;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.world.entity.WorldMap;
@@ -17,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.example.game.common.exception.ErrorCode.CANT_EDIT;
 import static com.example.game.common.exception.ErrorCode.DATA_NOT_FOUND;
@@ -30,10 +35,10 @@ public class FacilityService {
     private final FacilityRepository facilityRepository;
     private final UnitRepository unitRepository;
     private final WorldMapRepository worldMapRepository;
+    private final UnitItemRepository unitItemRepository;
 
     @Transactional
     public ResponseDto<FacilityResponseDto> facilityCreate(User user, FacilityCreateRequestDto requestDto) {
-
 
         Unit unit = unitRepository.findById(requestDto.getUnitId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
@@ -46,9 +51,15 @@ public class FacilityService {
             throw new GlobalException(ErrorCode.DESTINATION_NOT_EMPTY);
         }
 
-        // 유닛의 아이템 소모
+        FacilityType facilityType = FacilityType.valueOf(requestDto.getFacilityType());
 
-        Facility save = facilityRepository.save(new Facility(user, worldMap, requestDto.getFacilityType(), FacilityType.valueOf(requestDto.getFacilityType())));
+        Optional<UnitItem> unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.STEEL);
+        if (unitItem.isEmpty() || unitItem.get().getQuantity() < facilityType.getSteelCost()) {
+            throw new GlobalException(ErrorCode.NOT_ENOUGH_ITEM);
+        }
+        unitItem.get().useItem(facilityType.getSteelCost());
+
+        Facility save = facilityRepository.save(new Facility(user, worldMap, requestDto.getFacilityType(), facilityType));
 
         return ResponseDto.success(new FacilityResponseDto(save));
     }
