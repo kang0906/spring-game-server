@@ -5,6 +5,7 @@ import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.repository.FacilityRepository;
+import com.example.game.facility.service.FacilityService;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -33,17 +34,22 @@ public class WorldMapService {
     private final WorldMapRepository worldMapRepository;
     private final UnitRepository unitRepository;
     private final FacilityRepository facilityRepository;
+    private final FacilityService facilityService;
     private final MessageSource messageSource;
 
+    @Transactional
     public ResponseDto<WorldMapLoadResponseDto> loadWorldMap(User user, WorldMapLoadRequestDto requestDto) {
 
         int xRange = 18;
         int yRange = 9;
 
-        List<Unit> allUnitByAxisBetween = unitRepository.findAllByAxisBetween(requestDto.getX(), requestDto.getY(), xRange, yRange);
-
         List<Facility> allFacilityByAxisBetween = facilityRepository.findAllByAxisBetween(requestDto.getX(), requestDto.getY(), xRange, yRange);
+
         // todo : 시설 정보 업데이트 로직 추가 (생산 완료 등 ...)
+        allFacilityByAxisBetween.stream().forEach(facilityService::facilityStatusUpdate);
+
+
+        List<Unit> allUnitByAxisBetween = unitRepository.findAllByAxisBetween(requestDto.getX(), requestDto.getY(), xRange, yRange);
 
         WorldMapLoadResponseDto data = new WorldMapLoadResponseDto(
                 user.getUserId(),

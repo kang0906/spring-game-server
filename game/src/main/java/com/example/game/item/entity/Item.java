@@ -23,7 +23,18 @@ public abstract class Item extends BaseEntity {
     }
 
     public int useItem(int quantity) {
+        if (quantity < 0) {
+            throw new RuntimeException("Item usage must be greater than 0");
+        }
         this.quantity -= quantity;
+        return this.quantity;
+    }
+
+    public int addItem(int quantity) {
+        if (quantity < 0) {
+            throw new RuntimeException("Item increase quantity must be greater than 0");
+        }
+        this.quantity += quantity;
         return this.quantity;
     }
 }

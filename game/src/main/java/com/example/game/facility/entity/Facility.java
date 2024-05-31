@@ -8,11 +8,14 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Facility extends BaseEntity {
 
+    // todo : 구현 (엔티티 코드 구현 시 상속을 사용할지 고려해볼것 : 다형성)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long facilityId;
@@ -35,6 +38,8 @@ public class Facility extends BaseEntity {
     @Column(name = "axis_y")
     private Long axisY;
 
+    private LocalDateTime productionStartTime;
+
     public Facility(User user,WorldMap worldMap, String name, FacilityType type) {
         this.user = user;
         this.worldMap = worldMap;
@@ -42,9 +47,10 @@ public class Facility extends BaseEntity {
         this.type = type;
         this.axisX = worldMap.getAxisX();
         this.axisY = worldMap.getAxisY();
+        this.productionStartTime = LocalDateTime.now();
     }
 
-    public void updateFacilityStatus() {
-        // todo : 구현 (엔티티 코드 구현 시 상속을 사용할지 고려해볼것 : 다형성)
+    public void updateProductionStartTime() {
+        this.productionStartTime = LocalDateTime.now();
     }
 }

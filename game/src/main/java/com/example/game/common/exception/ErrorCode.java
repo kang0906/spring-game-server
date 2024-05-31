@@ -18,6 +18,7 @@ public enum ErrorCode {
     NOT_VALID_USERNAME(HttpStatus.BAD_REQUEST,"CUSTOMER_GROUP_04","이름이 유효하지 않습니다."),
     OUT_OF_RANGE(HttpStatus.BAD_REQUEST,"out of range","범위를 초과했습니다."),
     FRIENDLY_FIRE_NOT_ALLOWED(HttpStatus.BAD_REQUEST,"friendly fire is not allowed","아군은 공격할 수 없습니다."),
+    COOL_TIME_ERROR(HttpStatus.BAD_REQUEST,"cool time error","쿨타임이 지나지 않았습니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "USER_01", "존재하는 이메일 입니다."),
     TOKEN_EXPIRED(HttpStatus.BAD_REQUEST, "USER_02", "토큰 유효시간이 지났습니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "USER_03", "유효하지 않는 토큰입니다."),
