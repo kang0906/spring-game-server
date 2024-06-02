@@ -18,14 +18,14 @@ public enum FacilityType {
     private int ap;
     private int dp;
     private int range;
-    private int steelCost;
+    private int steelCostToCreate;
 
-    FacilityType(String name, int maxHp, int ap, int dp, int range, int steelCost) {
+    FacilityType(String name, int maxHp, int ap, int dp, int range, int facilityCreateSteelCost) {
         this.name = name;
         this.maxHp = maxHp;
         this.ap = ap;
         this.dp = dp;
         this.range = range;
-        this.steelCost = steelCost;
+        this.steelCostToCreate = facilityCreateSteelCost;
     }
 }

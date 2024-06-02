@@ -13,6 +13,7 @@ import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.item.entity.ItemType;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
+import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitItemRepository;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -57,10 +58,10 @@ public class FacilityService {
         FacilityType facilityType = FacilityType.valueOf(requestDto.getFacilityType());
 
         Optional<UnitItem> unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.STEEL);
-        if (unitItem.isEmpty() || unitItem.get().getQuantity() < facilityType.getSteelCost()) {
+        if (unitItem.isEmpty() || unitItem.get().getQuantity() < facilityType.getSteelCostToCreate()) {
             throw new GlobalException(ErrorCode.NOT_ENOUGH_ITEM);
         }
-        unitItem.get().useItem(facilityType.getSteelCost());
+        unitItem.get().useItem(facilityType.getSteelCostToCreate());
 
         Facility save = facilityRepository.save(new Facility(user, worldMap, requestDto.getFacilityType(), facilityType));
 
@@ -69,7 +70,7 @@ public class FacilityService {
 
     @Transactional
     public void facilityStatusUpdate(Facility facility) {
-        LocalDateTime productionStartTime = facility.getProductionStartTime();
+        LocalDateTime productionStartTime = facility.getProductionTime();
         if (productionStartTime.plusHours(1).isAfter(LocalDateTime.now())) {
             return ;
         }
@@ -81,20 +82,19 @@ public class FacilityService {
             case STEEL_FACTORY:
                 itemProductionInFacility(facility, ItemType.STEEL);
                 break;
+            case HEADQUARTERS:
             case INFANTRY_SCHOOL:
+                unitProductionInFacility(facility, UnitType.INFANTRY);
                 break;
             case ARTILLERY_SCHOOL:
+                unitProductionInFacility(facility, UnitType.ARTILLERY);
                 break;
             case CAVALRY_SCHOOL:
-                break;
-            case HEADQUARTERS:
+                unitProductionInFacility(facility, UnitType.CAVALRY);
                 break;
             default:
                 throw new GlobalException(INTERNAL_SERVER_ERROR);
         }
-
-        facility.updateProductionStartTime();
-
     }
 
     private void itemProductionInFacility(Facility facility, ItemType itemType) {
@@ -106,5 +106,33 @@ public class FacilityService {
             facilityFood = facilityFoodOptional.get();
         }
         facilityFood.addItem(100);
+
+        facility.updateProductionTime();
+    }
+
+    private void unitProductionInFacility(Facility facility, UnitType unitType) {
+        // 생성위치에 유닛이 있다면 생산하지 않고 return
+        if (unitRepository.findByWorldMap(facility.getWorldMap()).isPresent()) {
+            return;
+        }
+        // 아이템 부족하면 return
+        Optional<FacilityItem> facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL);
+        Optional<FacilityItem> facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD);
+
+        if(facilitySteel.isEmpty() || facilitySteel.get().getQuantity() < unitType.getSteelCostToCreate()) {
+            return;
+        }
+        if(facilityFood.isEmpty() || facilityFood.get().getQuantity() < unitType.getFoodCostToCreate()) {
+            return;
+        }
+
+        // 아이템이 충분하면 사용 처리
+        facilitySteel.get().useItem(unitType.getSteelCostToCreate());
+        facilityFood.get().useItem(unitType.getFoodCostToCreate());
+
+        // 유닛 생성
+        unitRepository.save(new Unit(facility.getUser(), facility.getWorldMap(), unitType.getName(), unitType));
+
+        facility.updateProductionTime();
     }
 }

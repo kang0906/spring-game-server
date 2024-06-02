@@ -38,7 +38,7 @@ public class Facility extends BaseEntity {
     @Column(name = "axis_y")
     private Long axisY;
 
-    private LocalDateTime productionStartTime;
+    private LocalDateTime productionTime;
 
     public Facility(User user,WorldMap worldMap, String name, FacilityType type) {
         this.user = user;
@@ -47,10 +47,10 @@ public class Facility extends BaseEntity {
         this.type = type;
         this.axisX = worldMap.getAxisX();
         this.axisY = worldMap.getAxisY();
-        this.productionStartTime = LocalDateTime.now();
+        this.productionTime = LocalDateTime.now();
     }
 
-    public void updateProductionStartTime() {
-        this.productionStartTime = LocalDateTime.now();
+    public void updateProductionTime() {
+        this.productionTime = LocalDateTime.now();
     }
 }
