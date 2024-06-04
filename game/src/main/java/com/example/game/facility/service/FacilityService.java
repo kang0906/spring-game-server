@@ -82,8 +82,7 @@ public class FacilityService {
             case STEEL_FACTORY:
                 itemProductionInFacility(facility, ItemType.STEEL);
                 break;
-            case HEADQUARTERS:
-            case INFANTRY_SCHOOL:
+            case INFANTRY_SCHOOL, HEADQUARTERS:
                 unitProductionInFacility(facility, UnitType.INFANTRY);
                 break;
             case ARTILLERY_SCHOOL:
@@ -111,11 +110,9 @@ public class FacilityService {
     }
 
     private void unitProductionInFacility(Facility facility, UnitType unitType) {
-        // 생성위치에 유닛이 있다면 생산하지 않고 return
         if (unitRepository.findByWorldMap(facility.getWorldMap()).isPresent()) {
             return;
         }
-        // 아이템 부족하면 return
         Optional<FacilityItem> facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL);
         Optional<FacilityItem> facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD);
 
@@ -126,11 +123,9 @@ public class FacilityService {
             return;
         }
 
-        // 아이템이 충분하면 사용 처리
         facilitySteel.get().useItem(unitType.getSteelCostToCreate());
         facilityFood.get().useItem(unitType.getFoodCostToCreate());
 
-        // 유닛 생성
         unitRepository.save(new Unit(facility.getUser(), facility.getWorldMap(), unitType.getName(), unitType));
 
         facility.updateProductionTime();

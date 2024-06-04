@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static com.example.game.unit.entity.UnitType.INFANTRY;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -53,8 +54,9 @@ class FacilityServiceFacilityStatusUpdateTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusHours(1).minusMinutes(1);
         Facility facility = facilityRepository
-                .save(new Facility(user, worldMap, "testFacility", facilityType, LocalDateTime.now().minusHours(1).minusMinutes(1)));
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
         facilityItemRepository.save(new FacilityItem(itemType, 100, facility));
 
         // when
@@ -63,8 +65,10 @@ class FacilityServiceFacilityStatusUpdateTest {
         // then
         FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, itemType)
                 .orElseThrow(() -> new RuntimeException());
-        Assertions.assertThat(facilityItem).isNotNull();
-        Assertions.assertThat(facilityItem.getQuantity()).isEqualTo(200);
+        assertThat(facility.getProductionTime()).isNotEqualTo(productionTime);
+
+        assertThat(facilityItem).isNotNull();
+        assertThat(facilityItem.getQuantity()).isEqualTo(200);
     }
 
     @DisplayName("아이템 생산 시설이 정상적으로 아이템을 생성한다.(시설아이템 엔티티가 없을 때)")
@@ -74,8 +78,9 @@ class FacilityServiceFacilityStatusUpdateTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusHours(1).minusMinutes(1);
         Facility facility = facilityRepository
-                .save(new Facility(user, worldMap, "testFacility", facilityType, LocalDateTime.now().minusHours(1).minusMinutes(1)));
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
 
         // when
         facilityService.facilityStatusUpdate(facility);
@@ -83,8 +88,11 @@ class FacilityServiceFacilityStatusUpdateTest {
         // then
         FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, itemType)
                 .orElseThrow(() -> new RuntimeException());
-        Assertions.assertThat(facilityItem).isNotNull();
-        Assertions.assertThat(facilityItem.getQuantity()).isEqualTo(100);
+
+        assertThat(facility.getProductionTime()).isNotEqualTo(productionTime);
+
+        assertThat(facilityItem).isNotNull();
+        assertThat(facilityItem.getQuantity()).isEqualTo(100);
 
     }
 
@@ -95,8 +103,9 @@ class FacilityServiceFacilityStatusUpdateTest {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusMinutes(59);
         Facility facility = facilityRepository
-                .save(new Facility(user, worldMap, "testFacility", facilityType, LocalDateTime.now().minusMinutes(59)));
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
         facilityItemRepository.save(new FacilityItem(itemType, 100, facility));
 
         // when
@@ -105,47 +114,115 @@ class FacilityServiceFacilityStatusUpdateTest {
         // then
         FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, itemType)
                 .orElseThrow(() -> new RuntimeException());
-        Assertions.assertThat(facilityItem).isNotNull();
-        Assertions.assertThat(facilityItem.getQuantity()).isEqualTo(100);
+        assertThat(facility.getProductionTime()).isEqualTo(productionTime);
+        assertThat(facilityItem).isNotNull();
+        assertThat(facilityItem.getQuantity()).isEqualTo(100);
     }
 
     @DisplayName("유닛 생산 시설이 정상적으로 유닛을 생성한다.")
-    @CsvSource({"HEADQUARTERS,INFANTRY", "INFANTRY_SCHOOL,INFANTRY", "ARTILLERY_SCHOOL,ARTILLERY", "CAVALRY_SCHOOL,CAVALRY"})
+    @CsvSource({"HEADQUARTERS,INFANTRY,100,100", "INFANTRY_SCHOOL,INFANTRY,100,100", "ARTILLERY_SCHOOL,ARTILLERY,150,100", "CAVALRY_SCHOOL,CAVALRY,200,100"})
     @ParameterizedTest
-    void unitFacilityCreateUnitTest(FacilityType facilityType, UnitType unitType) {
+    void unitFacilityCreateUnitTest(FacilityType facilityType, UnitType unitType, int steelCost, int foodCost) {
+        // given
+        int itemCount = 1000;
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusMinutes(61);
+        Facility facility = facilityRepository
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
+        FacilityItem facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, itemCount, facility));
+        FacilityItem facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, itemCount, facility));
+
+        // when
+        facilityService.facilityStatusUpdate(facility);
+
+        // then
+        Unit unit = unitRepository.findByWorldMap(worldMap)
+                .orElseThrow(() -> new RuntimeException());
+        assertThat(unit).isNotNull();
+        assertThat(unit.getType()).isEqualTo(unitType);
+
+        assertThat(facility.getProductionTime()).isNotEqualTo(productionTime);
+
+        assertThat(facilitySteel.getQuantity()).isEqualTo(itemCount - steelCost);
+        assertThat(facilityFood.getQuantity()).isEqualTo(itemCount - foodCost);
+    }
+
+    @DisplayName("생성 위치에 이미 유닛이 있는 경우 생산하지 않는다.")
+    @CsvSource({"HEADQUARTERS,INFANTRY,100,100", "INFANTRY_SCHOOL,INFANTRY,100,100", "ARTILLERY_SCHOOL,ARTILLERY,150,100", "CAVALRY_SCHOOL,CAVALRY,200,100"})
+    @ParameterizedTest
+    void unitFacilityIfPositionNotEmptyTest(FacilityType facilityType, UnitType unitType, int steelCost, int foodCost) {
+        // given
+        int itemCount = 1000;
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusMinutes(61);
+        Facility facility = facilityRepository
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
+        FacilityItem facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, itemCount, facility));
+        FacilityItem facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, itemCount, facility));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
+
+
+        // when
+        facilityService.facilityStatusUpdate(facility);
+
+        // then
+        assertThat(facility.getProductionTime()).isEqualTo(productionTime);
+        assertThat(facilitySteel.getQuantity()).isEqualTo(itemCount);
+        assertThat(facilityFood.getQuantity()).isEqualTo(itemCount);
+
+    }
+
+    @DisplayName("유닛 생산에 필요한 아이템이 부족한 경우 생산하지 않는다.")
+    @CsvSource({"HEADQUARTERS,INFANTRY,100,99", "INFANTRY_SCHOOL,INFANTRY,100,99", "ARTILLERY_SCHOOL,ARTILLERY,150,99", "CAVALRY_SCHOOL,CAVALRY,200,99",
+            "HEADQUARTERS,INFANTRY,99,100", "INFANTRY_SCHOOL,INFANTRY,99,100", "ARTILLERY_SCHOOL,ARTILLERY,149,100", "CAVALRY_SCHOOL,CAVALRY,199,100"})
+    @ParameterizedTest
+    void unitFacilityIfNotEnoughItemTest(FacilityType facilityType, UnitType unitType, int steelCost, int foodCost) {
         // given
         User user = userRepository.save(new User("testUser", null, "testUserName", ""));
         WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusMinutes(61);
         Facility facility = facilityRepository
-                .save(new Facility(user, worldMap, "testFacility", facilityType, LocalDateTime.now().minusMinutes(61)));
-        facilityItemRepository.save(new FacilityItem(ItemType.STEEL, 1000, facility));
-        facilityItemRepository.save(new FacilityItem(ItemType.FOOD, 1000, facility));
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
+        FacilityItem facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, steelCost, facility));
+        FacilityItem facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, foodCost, facility));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
+
 
         // when
+        facilityService.facilityStatusUpdate(facility);
 
         // then
+        assertThat(facility.getProductionTime()).isEqualTo(productionTime);
+        assertThat(facilitySteel.getQuantity()).isEqualTo(steelCost);
+        assertThat(facilityFood.getQuantity()).isEqualTo(foodCost);
 
     }
 
-    @DisplayName("생성 위치에 이미 유닛이 있는 경우 생산하지 않는다.")
-    @Test
-    void unitFacilityIfPositionNotEmptyTest() {
+    @DisplayName("쿨타임이 돌지 않은 경우 유닛을 생산하지 않는다.")
+    @CsvSource({"HEADQUARTERS", "INFANTRY_SCHOOL", "ARTILLERY_SCHOOL", "CAVALRY_SCHOOL"})
+    @ParameterizedTest
+    void unitFacilityNotCreateIfTimeTest(FacilityType facilityType) {
         // given
+        int itemCount = 1000;
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        LocalDateTime productionTime = LocalDateTime.now().minusMinutes(59);
+        Facility facility = facilityRepository
+                .save(new Facility(user, worldMap, "testFacility", facilityType, productionTime));
+        FacilityItem facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, itemCount, facility));
+        FacilityItem facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, itemCount, facility));
 
         // when
+        facilityService.facilityStatusUpdate(facility);
 
         // then
+        assertThat(unitRepository.findByWorldMap(worldMap).isEmpty()).isTrue();
+        assertThat(facility.getProductionTime()).isEqualTo(productionTime);
 
-    }
-
-    @DisplayName("생성 위치에 이미 유닛이 있는 경우 생산하지 않는다.")
-    @Test
-    void unitFacilityIfNotEnoughItemTest() {
-        // given
-
-        // when
-
-        // then
+        assertThat(facilitySteel.getQuantity()).isEqualTo(itemCount);
+        assertThat(facilityFood.getQuantity()).isEqualTo(itemCount);
 
     }
 
