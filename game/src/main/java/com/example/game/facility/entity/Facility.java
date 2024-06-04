@@ -50,6 +50,16 @@ public class Facility extends BaseEntity {
         this.productionTime = LocalDateTime.now();
     }
 
+    public Facility(User user,WorldMap worldMap, String name, FacilityType type, LocalDateTime productionTime) {
+        this.user = user;
+        this.worldMap = worldMap;
+        this.name = name;
+        this.type = type;
+        this.axisX = worldMap.getAxisX();
+        this.axisY = worldMap.getAxisY();
+        this.productionTime = productionTime;
+    }
+
     public void updateProductionTime() {
         this.productionTime = LocalDateTime.now();
     }
