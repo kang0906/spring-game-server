@@ -4,8 +4,11 @@ import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
+import com.example.game.facility.entity.FacilityItem;
 import com.example.game.facility.entity.FacilityType;
+import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
+import com.example.game.item.entity.ItemType;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitRepository;
@@ -35,6 +38,7 @@ public class UserService {
     private final WorldMapService worldMapService;
     private final FacilityRepository facilityRepository;
     private final UnitRepository unitRepository;
+    private final FacilityItemRepository facilityItemRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
@@ -61,6 +65,8 @@ public class UserService {
     public User setNewUser(User newUser, WorldMap spawnPosition) {
         Facility facility = new Facility(newUser, spawnPosition, HEADQUARTERS.getName(), HEADQUARTERS);
         facilityRepository.save(facility);
+        facilityItemRepository.save(new FacilityItem(ItemType.STEEL, 500, facility));
+        facilityItemRepository.save(new FacilityItem(ItemType.FOOD, 500, facility));
 
         Long x = spawnPosition.getAxisX();
         Long y = spawnPosition.getAxisY();
