@@ -3,7 +3,9 @@ package com.example.game.facility.service;
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
+import com.example.game.config.UserDetailsImpl;
 import com.example.game.facility.dto.FacilityCreateRequestDto;
+import com.example.game.facility.dto.FacilityItemMoveRequestDto;
 import com.example.game.facility.dto.FacilityResponseDto;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
@@ -21,8 +23,10 @@ import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -40,6 +44,48 @@ public class FacilityService {
     private final UnitRepository unitRepository;
     private final WorldMapRepository worldMapRepository;
     private final UnitItemRepository unitItemRepository;
+
+    @Transactional
+    public ResponseDto<String> facilityItemMove(User user, FacilityItemMoveRequestDto requestDto) {
+
+        if (requestDto.getSteelQuantity() < 0 || requestDto.getFoodQuantity() < 0) {
+           throw new GlobalException(CAN_NOT_USE_NEGATIVE_NUMBER);
+        }
+
+        Facility facility = facilityRepository.findById(requestDto.getFacilityId())
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        FacilityItem facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL)
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        FacilityItem facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD)
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        if (facilitySteel.getQuantity() < requestDto.getSteelQuantity() || facilityFood.getQuantity() < requestDto.getFoodQuantity()) {
+            throw new GlobalException(NOT_ENOUGH_ITEM);
+        }
+
+        Unit unit = unitRepository.findByWorldMap(facility.getWorldMap())
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        UnitItem unitSteel = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.STEEL).orElse(null);
+        UnitItem unitFood = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.FOOD).orElse(null);
+
+        if (unitSteel == null) {
+            unitSteel = unitItemRepository.save(new UnitItem(unit, ItemType.STEEL, 0));
+        }
+        if (unitFood == null) {
+            unitFood = unitItemRepository.save(new UnitItem(unit, ItemType.FOOD, 0));
+        }
+
+        facilitySteel.useItem(requestDto.getSteelQuantity());
+        facilityFood.useItem(requestDto.getFoodQuantity());
+
+        unitSteel.addItem(requestDto.getSteelQuantity());
+        unitFood.addItem(requestDto.getFoodQuantity());
+
+
+        return ResponseDto.success("success");
+    }
 
     @Transactional
     public ResponseDto<FacilityResponseDto> facilityCreate(User user, FacilityCreateRequestDto requestDto) {

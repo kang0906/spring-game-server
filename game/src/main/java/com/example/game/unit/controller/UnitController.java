@@ -2,8 +2,10 @@ package com.example.game.unit.controller;
 
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.config.UserDetailsImpl;
+import com.example.game.facility.dto.FacilityCreateRequestDto;
 import com.example.game.unit.dto.UnitAttackRequestDto;
 import com.example.game.unit.dto.UnitAttackResponseDto;
+import com.example.game.unit.dto.UnitItemMoveRequestDto;
 import com.example.game.unit.dto.UnitMoveRequestDto;
 import com.example.game.unit.service.UnitService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +33,13 @@ public class UnitController {
     public ResponseDto<UnitAttackResponseDto> unitAttack(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UnitAttackRequestDto requestDto) {
 
         return ResponseDto.success(unitService.unitAttack(requestDto, userDetails.getUser()));
+    }
+
+    @ResponseBody
+    @PostMapping("/unit/item/move")
+    public ResponseDto<String> facilityItemMove(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UnitItemMoveRequestDto requestDto) {
+
+        return unitService.unitItemMove(userDetails.getUser(), requestDto);
     }
 }

@@ -3,6 +3,7 @@ package com.example.game.facility.controller;
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.config.UserDetailsImpl;
 import com.example.game.facility.dto.FacilityCreateRequestDto;
+import com.example.game.facility.dto.FacilityItemMoveRequestDto;
 import com.example.game.facility.dto.FacilityResponseDto;
 import com.example.game.facility.service.FacilityService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,17 @@ public class FacilityController {
 
     @ResponseBody
     @PostMapping("/facility/create")
-    public ResponseDto<FacilityResponseDto> facilityCreate(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FacilityCreateRequestDto requestDto) {
-
+    public ResponseDto<FacilityResponseDto> facilityCreate(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FacilityCreateRequestDto requestDto) {
 
         return facilityService.facilityCreate(userDetails.getUser(), requestDto);
+    }
+
+    @ResponseBody
+    @PostMapping("/facility/item/move")
+    public ResponseDto<String> facilityItemMove(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FacilityItemMoveRequestDto requestDto) {
+
+        return facilityService.facilityItemMove(userDetails.getUser(), requestDto);
     }
 }

@@ -2,19 +2,26 @@ package com.example.game.unit.service;
 
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.unit.dto.UnitAttackRequestDto;
-import com.example.game.unit.dto.UnitAttackResponseDto;
-import com.example.game.unit.dto.UnitMoveRequestDto;
-import com.example.game.unit.dto.UnitResponseDto;
+import com.example.game.config.UserDetailsImpl;
+import com.example.game.facility.entity.Facility;
+import com.example.game.facility.entity.FacilityItem;
+import com.example.game.facility.repository.FacilityItemRepository;
+import com.example.game.facility.repository.FacilityRepository;
+import com.example.game.item.entity.ItemType;
+import com.example.game.unit.dto.*;
 import com.example.game.unit.entity.Unit;
+import com.example.game.unit.entity.UnitItem;
+import com.example.game.unit.repository.UnitItemRepository;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.example.game.common.exception.ErrorCode.*;
 
@@ -26,6 +33,52 @@ public class UnitService {
 
     private final UnitRepository unitRepository;
     private final WorldMapRepository worldMapRepository;
+    private final UnitItemRepository unitItemRepository;
+    private final FacilityRepository facilityRepository;
+    private final FacilityItemRepository facilityItemRepository;
+
+
+    @Transactional
+    public ResponseDto<String> unitItemMove(User user, UnitItemMoveRequestDto requestDto) {
+
+        if (requestDto.getSteelQuantity() < 0 || requestDto.getFoodQuantity() < 0) {
+            throw new GlobalException(CAN_NOT_USE_NEGATIVE_NUMBER);
+        }
+
+        Unit unit = unitRepository.findById(requestDto.getUnitId())
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        UnitItem unitSteel = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.STEEL)
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        UnitItem unitFood = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.FOOD)
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        if (unitSteel.getQuantity() < requestDto.getSteelQuantity() || unitFood.getQuantity() < requestDto.getFoodQuantity()) {
+            throw new GlobalException(NOT_ENOUGH_ITEM);
+        }
+
+        Facility facility = facilityRepository.findByWorldMap(unit.getWorldMap())
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+
+        FacilityItem facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL).orElse(null);
+        FacilityItem facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD).orElse(null);
+
+        if (facilitySteel == null) {
+            facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, 0, facility));
+        }
+        if (facilityFood == null) {
+            facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, 0, facility));
+        }
+
+        unitSteel.useItem(requestDto.getSteelQuantity());
+        unitFood.useItem(requestDto.getFoodQuantity());
+
+        facilitySteel.addItem(requestDto.getSteelQuantity());
+        facilityFood.addItem(requestDto.getFoodQuantity());
+
+
+        return ResponseDto.success("success");
+    }
 
     @Transactional
     public void unitMove(UnitMoveRequestDto requestDto, User requestUser) {
