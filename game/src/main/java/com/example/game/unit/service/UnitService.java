@@ -41,41 +41,32 @@ public class UnitService {
     @Transactional
     public ResponseDto<String> unitItemMove(User user, UnitItemMoveRequestDto requestDto) {
 
-        if (requestDto.getSteelQuantity() < 0 || requestDto.getFoodQuantity() < 0) {
+        if (requestDto.getQuantity() < 0) {
             throw new GlobalException(CAN_NOT_USE_NEGATIVE_NUMBER);
         }
 
         Unit unit = unitRepository.findById(requestDto.getUnitId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
-        UnitItem unitSteel = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.STEEL)
-                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
-        UnitItem unitFood = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, ItemType.FOOD)
+        UnitItem unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, requestDto.getItemType())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
-        if (unitSteel.getQuantity() < requestDto.getSteelQuantity() || unitFood.getQuantity() < requestDto.getFoodQuantity()) {
+
+        if (unitItem.getQuantity() < requestDto.getQuantity()) {
             throw new GlobalException(NOT_ENOUGH_ITEM);
         }
 
         Facility facility = facilityRepository.findByWorldMap(unit.getWorldMap())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
-        FacilityItem facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL).orElse(null);
-        FacilityItem facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD).orElse(null);
+        FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, requestDto.getItemType()).orElse(null);
 
-        if (facilitySteel == null) {
-            facilitySteel = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, 0, facility));
-        }
-        if (facilityFood == null) {
-            facilityFood = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, 0, facility));
+        if (facilityItem == null) {
+            facilityItem = facilityItemRepository.save(new FacilityItem(requestDto.getItemType(), 0, facility));
         }
 
-        unitSteel.useItem(requestDto.getSteelQuantity());
-        unitFood.useItem(requestDto.getFoodQuantity());
-
-        facilitySteel.addItem(requestDto.getSteelQuantity());
-        facilityFood.addItem(requestDto.getFoodQuantity());
-
+        unitItem.useItem(requestDto.getQuantity());
+        facilityItem.addItem(requestDto.getQuantity());
 
         return ResponseDto.success("success");
     }

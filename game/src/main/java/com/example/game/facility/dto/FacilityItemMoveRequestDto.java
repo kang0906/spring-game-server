@@ -1,5 +1,6 @@
 package com.example.game.facility.dto;
 
+import com.example.game.item.entity.ItemType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,6 @@ import lombok.Setter;
 public class FacilityItemMoveRequestDto {
 
     private Long facilityId;
-    private int steelQuantity;
-    private int foodQuantity;
+    private ItemType itemType;
+    private int quantity;
 }

@@ -1,5 +1,6 @@
 package com.example.game.unit.dto;
 
+import com.example.game.item.entity.ItemType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,6 @@ import lombok.Setter;
 public class UnitItemMoveRequestDto {
 
     private Long unitId;
-    private int steelQuantity;
-    private int foodQuantity;
+    private ItemType itemType;
+    private int quantity;
 }
