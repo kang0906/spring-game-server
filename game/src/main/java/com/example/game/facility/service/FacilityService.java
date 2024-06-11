@@ -56,7 +56,7 @@ public class FacilityService {
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
         FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, requestDto.getItemType())
-                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(NOT_ENOUGH_ITEM));
 
         if (facilityItem.getQuantity() < requestDto.getQuantity()) {
             throw new GlobalException(NOT_ENOUGH_ITEM);

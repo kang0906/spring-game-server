@@ -49,7 +49,7 @@ public class UnitService {
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
 
         UnitItem unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, requestDto.getItemType())
-                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(NOT_ENOUGH_ITEM));
 
 
         if (unitItem.getQuantity() < requestDto.getQuantity()) {

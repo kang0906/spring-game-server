@@ -19,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -56,4 +59,28 @@ class FacilityItemRepositoryTest {
         assertThat(facilityItem.getQuantity()).isEqualTo(100);
         assertThat(facilityItem.getItemType()).isEqualTo(ItemType.STEEL);
     }
+
+    @DisplayName("시설 엔티티를 통해 시설아이템 엔티티를 조회한다.")
+    @Test
+    void findAllByFacilityTest() {
+        // given
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 1L));
+        Facility facility = facilityRepository.save(new Facility(user, worldMap, "facilityName", FacilityType.FARM));
+
+        FacilityItem save = facilityItemRepository.save(new FacilityItem(ItemType.STEEL, 100, facility));
+        FacilityItem save2 = facilityItemRepository.save(new FacilityItem(ItemType.FOOD, 200, facility));
+
+        // when
+        List<FacilityItem> allByFacility = facilityItemRepository.findAllByFacility(facility);
+
+        // then
+        assertThat(allByFacility).hasSize(2)
+                .extracting("itemType", "quantity")
+                .containsExactlyInAnyOrder(
+                        tuple(ItemType.STEEL, 100),
+                        tuple(ItemType.FOOD, 200)
+                );
+    }
+
 }
