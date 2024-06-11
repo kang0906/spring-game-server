@@ -47,6 +47,7 @@ public class UnitService {
 
         Unit unit = unitRepository.findById(requestDto.getUnitId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        checkUnitOwner(unit.getUnitId(), user);
 
         UnitItem unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, requestDto.getItemType())
                 .orElseThrow(() -> new GlobalException(NOT_ENOUGH_ITEM));

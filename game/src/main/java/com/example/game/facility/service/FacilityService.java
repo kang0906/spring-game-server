@@ -3,7 +3,6 @@ package com.example.game.facility.service;
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.config.UserDetailsImpl;
 import com.example.game.facility.dto.FacilityCreateRequestDto;
 import com.example.game.facility.dto.FacilityItemMoveRequestDto;
 import com.example.game.facility.dto.FacilityResponseDto;
@@ -23,10 +22,8 @@ import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -54,6 +51,9 @@ public class FacilityService {
 
         Facility facility = facilityRepository.findById(requestDto.getFacilityId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        if (!facility.getUser().getUserId().equals(user.getUserId())) {
+            throw new GlobalException(CANT_EDIT);
+        }
 
         FacilityItem facilityItem = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, requestDto.getItemType())
                 .orElseThrow(() -> new GlobalException(NOT_ENOUGH_ITEM));
@@ -134,12 +134,7 @@ public class FacilityService {
 
     private void itemProductionInFacility(Facility facility, ItemType itemType) {
         Optional<FacilityItem> facilityFoodOptional = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, itemType);
-        FacilityItem facilityFood;
-        if (facilityFoodOptional.isEmpty()) {
-            facilityFood = facilityItemRepository.save(new FacilityItem(itemType, 0, facility));
-        } else {
-            facilityFood = facilityFoodOptional.get();
-        }
+        FacilityItem facilityFood = facilityFoodOptional.orElseGet(() -> facilityItemRepository.save(new FacilityItem(itemType, 0, facility)));
         facilityFood.addItem(100);
 
         facility.updateProductionTime();

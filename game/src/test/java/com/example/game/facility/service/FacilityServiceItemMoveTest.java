@@ -174,6 +174,24 @@ class FacilityServiceItemMoveTest {
                 .hasMessage(ErrorCode.NOT_ENOUGH_ITEM.getMessage());
     }
 
+    @DisplayName("소유하지 않은 시설의 경우 예외가 발생한다.")
+    @Test
+    void facilityItemMoveWithNotOwningTest() {
+        // given
+        int moveQuantity = 100;
+        int initialQuantity = 10;
 
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        Facility facility = facilityRepository
+                .save(new Facility(user, worldMap, "testFacility", FacilityType.FARM));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
 
+        // when then
+        assertThatThrownBy(() ->
+                facilityService.facilityItemMove(user2, new FacilityItemMoveRequestDto(facility.getFacilityId(), ItemType.STEEL, moveQuantity)))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ErrorCode.CANT_EDIT.getMessage());
+    }
 }
