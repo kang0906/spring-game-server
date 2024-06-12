@@ -2,12 +2,10 @@ package com.example.game.unit.service;
 
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.config.UserDetailsImpl;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
-import com.example.game.item.entity.ItemType;
 import com.example.game.unit.dto.*;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
@@ -18,10 +16,9 @@ import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.example.game.common.exception.ErrorCode.*;
 
@@ -36,6 +33,7 @@ public class UnitService {
     private final UnitItemRepository unitItemRepository;
     private final FacilityRepository facilityRepository;
     private final FacilityItemRepository facilityItemRepository;
+    private final MessageSource messageSource;
 
 
     @Transactional
@@ -77,13 +75,13 @@ public class UnitService {
 
         // 이동 값이 (0,0) 일 경우 이동로직을 수행하지 않고 return
         if (requestDto.getX() == 0 && requestDto.getY() == 0) {
-            return ;
+            return;
         }
 
         // 이동가능한 위치인지(이동 거리) 확인
 
-        int x = (int)(long)requestDto.getX();
-        int y = (int)(long)requestDto.getY();
+        int x = (int) (long) requestDto.getX();
+        int y = (int) (long) requestDto.getY();
 
         x = Math.abs(x);
         y = Math.abs(y);
@@ -96,6 +94,13 @@ public class UnitService {
 
         // 유닛이 요청한 유저의 소유인지 확인
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
+
+        // 맵 크기 제한 확인
+        long mapSize = Long.parseLong(messageSource.getMessage("game.map.size", null, null));
+        if (Math.abs(unit.getAxisX() + requestDto.getX()) > mapSize
+                || Math.abs(unit.getAxisY() + requestDto.getY()) > mapSize ) {
+            throw new GlobalException(OUT_OF_MAP_RANGE);
+        }
 
         // todo : 이동하려는 좌표에 락 설정
 
@@ -130,7 +135,7 @@ public class UnitService {
         // 공격 수행
         targetUnit.takeAttackFrom(unit);
 
-        if(targetUnit.getHp() <= 0) {
+        if (targetUnit.getHp() <= 0) {
             log.info("unit {} deleted(owner {})", targetUnit.getUnitId(), targetUnit.getUser().getUserId());
             unitRepository.delete(targetUnit);
         }
