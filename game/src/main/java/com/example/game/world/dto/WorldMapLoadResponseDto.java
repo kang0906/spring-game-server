@@ -1,7 +1,7 @@
 package com.example.game.world.dto;
 
 import com.example.game.facility.dto.FacilityResponseDto;
-import com.example.game.unit.dto.UnitResponseDto;
+import com.example.game.unit.dto.response.UnitResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

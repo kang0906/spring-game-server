@@ -1,4 +1,4 @@
-package com.example.game.unit.dto;
+package com.example.game.unit.dto.response;
 
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitType;

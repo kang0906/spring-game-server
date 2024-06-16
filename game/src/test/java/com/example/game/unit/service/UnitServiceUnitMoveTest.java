@@ -2,7 +2,7 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.unit.dto.UnitMoveRequestDto;
+import com.example.game.unit.dto.request.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;

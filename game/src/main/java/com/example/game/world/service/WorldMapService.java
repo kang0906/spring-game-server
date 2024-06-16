@@ -12,7 +12,7 @@ import com.example.game.user.entity.User;
 import com.example.game.facility.dto.FacilityResponseDto;
 import com.example.game.world.dto.WorldMapLoadRequestDto;
 import com.example.game.world.dto.WorldMapLoadResponseDto;
-import com.example.game.unit.dto.UnitResponseDto;
+import com.example.game.unit.dto.response.UnitResponseDto;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 @Service

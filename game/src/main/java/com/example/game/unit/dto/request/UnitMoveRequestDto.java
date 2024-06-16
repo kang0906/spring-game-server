@@ -1,4 +1,4 @@
-package com.example.game.unit.dto;
+package com.example.game.unit.dto.request;
 
 import lombok.*;
 

@@ -6,7 +6,13 @@ import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
-import com.example.game.unit.dto.*;
+import com.example.game.unit.dto.request.UnitAttackRequestDto;
+import com.example.game.unit.dto.request.UnitItemMoveRequestDto;
+import com.example.game.unit.dto.request.UnitMoveRequestDto;
+import com.example.game.unit.dto.response.UnitAttackResponseDto;
+import com.example.game.unit.dto.response.UnitDetailResponseDto;
+import com.example.game.unit.dto.response.UnitItemResponseDto;
+import com.example.game.unit.dto.response.UnitResponseDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
 import com.example.game.unit.repository.UnitItemRepository;
@@ -19,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.game.common.exception.ErrorCode.*;
 
@@ -35,9 +43,22 @@ public class UnitService {
     private final FacilityItemRepository facilityItemRepository;
     private final MessageSource messageSource;
 
+    public UnitDetailResponseDto unitItemList(User user, Long unitId) {
+
+        Unit unit = checkUnitOwner(unitId, user);
+        List<UnitItem> unitItemList = unitItemRepository.findAllByUnit(unit);
+
+
+        return new UnitDetailResponseDto(
+                new UnitResponseDto(unit),
+                unitItemList
+                        .stream()
+                        .map(UnitItemResponseDto::new)
+                        .toList());
+    }
 
     @Transactional
-    public ResponseDto<String> unitItemMove(User user, UnitItemMoveRequestDto requestDto) {
+    public String unitItemMove(User user, UnitItemMoveRequestDto requestDto) {
 
         if (requestDto.getQuantity() < 0) {
             throw new GlobalException(CAN_NOT_USE_NEGATIVE_NUMBER);
@@ -67,7 +88,7 @@ public class UnitService {
         unitItem.useItem(requestDto.getQuantity());
         facilityItem.addItem(requestDto.getQuantity());
 
-        return ResponseDto.success("success");
+        return "success";
     }
 
     @Transactional

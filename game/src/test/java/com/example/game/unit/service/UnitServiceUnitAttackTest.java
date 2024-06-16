@@ -2,8 +2,7 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.unit.dto.UnitAttackRequestDto;
-import com.example.game.unit.dto.UnitMoveRequestDto;
+import com.example.game.unit.dto.request.UnitAttackRequestDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.example.game.unit.entity.UnitType.INFANTRY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

@@ -1,4 +1,4 @@
-package com.example.game.unit.dto;
+package com.example.game.unit.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

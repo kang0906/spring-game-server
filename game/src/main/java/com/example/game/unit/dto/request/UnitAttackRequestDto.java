@@ -1,6 +1,6 @@
-package com.example.game.unit.dto;
+package com.example.game.unit.dto.request;
 
-import com.example.game.item.entity.ItemType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UnitItemMoveRequestDto {
-
+public class UnitAttackRequestDto {
     private Long unitId;
-    private ItemType itemType;
-    private int quantity;
+    private Long targetId;
 }

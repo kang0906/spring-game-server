@@ -2,15 +2,13 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
-import com.example.game.facility.dto.FacilityItemMoveRequestDto;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
 import com.example.game.facility.entity.FacilityType;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
-import com.example.game.facility.service.FacilityService;
 import com.example.game.item.entity.ItemType;
-import com.example.game.unit.dto.UnitItemMoveRequestDto;
+import com.example.game.unit.dto.request.UnitItemMoveRequestDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
 import com.example.game.unit.repository.UnitItemRepository;
@@ -25,13 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.game.unit.entity.UnitType.INFANTRY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

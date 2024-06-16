@@ -2,14 +2,13 @@ package com.example.game.unit.controller;
 
 import com.example.game.common.dto.ResponseDto;
 import com.example.game.config.UserDetailsImpl;
-import com.example.game.facility.dto.FacilityCreateRequestDto;
-import com.example.game.unit.dto.UnitAttackRequestDto;
-import com.example.game.unit.dto.UnitAttackResponseDto;
-import com.example.game.unit.dto.UnitItemMoveRequestDto;
-import com.example.game.unit.dto.UnitMoveRequestDto;
+import com.example.game.unit.dto.request.UnitAttackRequestDto;
+import com.example.game.unit.dto.request.UnitItemMoveRequestDto;
+import com.example.game.unit.dto.request.UnitMoveRequestDto;
+import com.example.game.unit.dto.response.UnitAttackResponseDto;
+import com.example.game.unit.dto.response.UnitDetailResponseDto;
 import com.example.game.unit.service.UnitService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +36,17 @@ public class UnitController {
 
     @ResponseBody
     @PostMapping("/unit/item/move")
-    public ResponseDto<String> facilityItemMove(
+    public ResponseDto<String> unitItemMove(
             @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UnitItemMoveRequestDto requestDto) {
 
-        return unitService.unitItemMove(userDetails.getUser(), requestDto);
+        return ResponseDto.success(unitService.unitItemMove(userDetails.getUser(), requestDto));
+    }
+
+    @ResponseBody
+    @GetMapping("/unit/{unitId}/item")
+    public ResponseDto<UnitDetailResponseDto> unitItemList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long unitId) {
+
+        return ResponseDto.success(unitService.unitItemList(userDetails.getUser(), unitId));
     }
 }
