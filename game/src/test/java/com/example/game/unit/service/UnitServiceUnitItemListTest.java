@@ -74,5 +74,12 @@ class UnitServiceUnitItemListTest {
                         tuple(ItemType.STEEL, initialQuantity),
                         tuple(ItemType.FOOD, initialQuantity)
                 );
+
+        assertThat(responseDto.getFacilityItemList()).hasSize(2)
+                .extracting("itemType", "quantity")
+                .containsExactlyInAnyOrder(
+                        tuple(ItemType.STEEL, initialQuantity),
+                        tuple(ItemType.FOOD, initialQuantity)
+                );
     }
 }

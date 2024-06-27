@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UnitDetailResponseDto {
     private UnitResponseDto unit;
-    private List<UnitItemResponseDto> unitItemList;
+    private List<ItemResponseDto> unitItemList;
+    private List<ItemResponseDto> facilityItemList;
 }

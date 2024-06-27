@@ -1,6 +1,5 @@
 package com.example.game.unit.service;
 
-import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
@@ -11,7 +10,7 @@ import com.example.game.unit.dto.request.UnitItemMoveRequestDto;
 import com.example.game.unit.dto.request.UnitMoveRequestDto;
 import com.example.game.unit.dto.response.UnitAttackResponseDto;
 import com.example.game.unit.dto.response.UnitDetailResponseDto;
-import com.example.game.unit.dto.response.UnitItemResponseDto;
+import com.example.game.unit.dto.response.ItemResponseDto;
 import com.example.game.unit.dto.response.UnitResponseDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
@@ -23,10 +22,13 @@ import com.example.game.world.repository.WorldMapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.game.common.exception.ErrorCode.*;
 
@@ -48,13 +50,24 @@ public class UnitService {
         Unit unit = checkUnitOwner(unitId, user);
         List<UnitItem> unitItemList = unitItemRepository.findAllByUnit(unit);
 
+        List<FacilityItem> facilityItemList = new ArrayList<>();
+        Optional<Facility> facility = facilityRepository.findByWorldMap(unit.getWorldMap());
+        if (facility.isPresent()) {
+            facilityItemList = facilityItemRepository.findAllByFacility(facility.get());
+        }
+
 
         return new UnitDetailResponseDto(
                 new UnitResponseDto(unit),
                 unitItemList
                         .stream()
-                        .map(UnitItemResponseDto::new)
-                        .toList());
+                        .map(ItemResponseDto::new)
+                        .toList(),
+                facilityItemList
+                        .stream()
+                        .map(ItemResponseDto::new)
+                        .toList()
+                );
     }
 
     @Transactional
