@@ -23,6 +23,6 @@ public class WorldMapController {
     public ResponseDto<WorldMapLoadResponseDto> loadWorldMap(
             @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody WorldMapLoadRequestDto requestDto) {
 
-        return worldMapService.loadWorldMap(userDetails.getUser(), requestDto);
+        return ResponseDto.success(worldMapService.loadWorldMap(userDetails.getUser(), requestDto));
     }
 }

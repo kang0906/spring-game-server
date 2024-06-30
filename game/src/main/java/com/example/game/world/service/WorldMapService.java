@@ -37,7 +37,7 @@ public class WorldMapService {
     private final MessageSource messageSource;
 
     @Transactional
-    public ResponseDto<WorldMapLoadResponseDto> loadWorldMap(User user, WorldMapLoadRequestDto requestDto) {
+    public WorldMapLoadResponseDto loadWorldMap(User user, WorldMapLoadRequestDto requestDto) {
 
         int xRange = 18;
         int yRange = 9;
@@ -68,7 +68,7 @@ public class WorldMapService {
             }
         }
 
-        return ResponseDto.success(data);
+        return data;
     }
 
     public WorldMap getOrMakeWorldMap(long x, long y) {

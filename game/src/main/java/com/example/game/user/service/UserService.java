@@ -58,8 +58,8 @@ public class UserService {
         }
     }
 
-    public ResponseDto<MyInfoResponseDto> getMyInfo(User user) {
-        return ResponseDto.success(new MyInfoResponseDto(user));
+    public MyInfoResponseDto getMyInfo(User user) {
+        return new MyInfoResponseDto(user);
     }
 
     public User setNewUser(User newUser, WorldMap spawnPosition) {

@@ -43,7 +43,7 @@ public class FacilityService {
     private final UnitItemRepository unitItemRepository;
 
     @Transactional
-    public ResponseDto<String> facilityItemMove(User user, FacilityItemMoveRequestDto requestDto) {
+    public String facilityItemMove(User user, FacilityItemMoveRequestDto requestDto) {
 
         if (requestDto.getQuantity() < 0) {
            throw new GlobalException(CAN_NOT_USE_NEGATIVE_NUMBER);
@@ -74,11 +74,11 @@ public class FacilityService {
         facilityItem.useItem(requestDto.getQuantity());
         unitItem.addItem(requestDto.getQuantity());
 
-        return ResponseDto.success("success");
+        return "success";
     }
 
     @Transactional
-    public ResponseDto<FacilityResponseDto> facilityCreate(User user, FacilityCreateRequestDto requestDto) {
+    public FacilityResponseDto facilityCreate(User user, FacilityCreateRequestDto requestDto) {
 
         Unit unit = unitRepository.findById(requestDto.getUnitId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
@@ -101,7 +101,7 @@ public class FacilityService {
 
         Facility save = facilityRepository.save(new Facility(user, worldMap, requestDto.getFacilityType(), facilityType));
 
-        return ResponseDto.success(new FacilityResponseDto(save));
+        return new FacilityResponseDto(save);
     }
 
     @Transactional

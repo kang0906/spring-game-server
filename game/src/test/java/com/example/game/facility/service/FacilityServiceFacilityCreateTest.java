@@ -53,7 +53,7 @@ class FacilityServiceFacilityCreateTest {
         unitItemRepository.save(new UnitItem(unit, ItemType.STEEL, 1000));
 
         // when
-        ResponseDto<FacilityResponseDto> farm = facilityService.facilityCreate(user, new FacilityCreateRequestDto(unit.getUnitId(), "FARM"));
+        facilityService.facilityCreate(user, new FacilityCreateRequestDto(unit.getUnitId(), "FARM"));
 
         // then
         Facility facility = facilityRepository.findByWorldMap(worldMap)

@@ -24,7 +24,7 @@ public class FacilityController {
     public ResponseDto<FacilityResponseDto> facilityCreate(
             @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FacilityCreateRequestDto requestDto) {
 
-        return facilityService.facilityCreate(userDetails.getUser(), requestDto);
+        return ResponseDto.success(facilityService.facilityCreate(userDetails.getUser(), requestDto));
     }
 
     @ResponseBody
@@ -32,6 +32,6 @@ public class FacilityController {
     public ResponseDto<String> facilityItemMove(
             @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FacilityItemMoveRequestDto requestDto) {
 
-        return facilityService.facilityItemMove(userDetails.getUser(), requestDto);
+        return ResponseDto.success(facilityService.facilityItemMove(userDetails.getUser(), requestDto));
     }
 }

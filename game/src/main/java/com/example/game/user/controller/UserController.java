@@ -25,6 +25,6 @@ public class UserController {
 
     @GetMapping("/mypage/{userId}")
     public ResponseDto<MyInfoResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getMyInfo(userDetails.getUser());
+        return ResponseDto.success(userService.getMyInfo(userDetails.getUser()));
     }
 }
