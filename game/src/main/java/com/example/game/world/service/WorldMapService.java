@@ -1,6 +1,5 @@
 package com.example.game.world.service;
 
-import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
@@ -10,6 +9,7 @@ import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.facility.dto.FacilityResponseDto;
+import com.example.game.world.dto.WorldMapInfoDto;
 import com.example.game.world.dto.WorldMapLoadRequestDto;
 import com.example.game.world.dto.WorldMapLoadResponseDto;
 import com.example.game.unit.dto.response.UnitResponseDto;
@@ -110,5 +110,11 @@ public class WorldMapService {
         }
 
         throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    public WorldMapInfoDto getWorldMapInfo() {
+        return new WorldMapInfoDto(
+                Long.parseLong(messageSource.getMessage("game.map.size", null, null))
+        );
     }
 }
