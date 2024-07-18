@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,6 +38,7 @@ public class Unit extends BaseEntity {
     private Long axisX;
     @Column(name = "axis_y")
     private Long axisY;
+    private LocalDateTime actionTime;
 
 
     public void move(WorldMap destination) {
@@ -56,8 +59,9 @@ public class Unit extends BaseEntity {
         this.hp = hp;
         this.ap = ap;
         this.dp = dp;
-        axisX = worldMap.getAxisX();
-        axisY = worldMap.getAxisY();
+        this.axisX = worldMap.getAxisX();
+        this.axisY = worldMap.getAxisY();
+        this.actionTime = LocalDateTime.now().minusDays(1);
     }
 
     public Unit(User user, WorldMap worldMap, String name, UnitType type) {
@@ -68,7 +72,12 @@ public class Unit extends BaseEntity {
         this.hp = type.getMaxHp();
         this.ap = type.getAp();
         this.dp = type.getDp();
-        axisX = worldMap.getAxisX();
-        axisY = worldMap.getAxisY();
+        this.axisX = worldMap.getAxisX();
+        this.axisY = worldMap.getAxisY();
+        this.actionTime = LocalDateTime.now().minusDays(1);
+    }
+
+    public void updateActionTime() {
+        this.actionTime = LocalDateTime.now();
     }
 }

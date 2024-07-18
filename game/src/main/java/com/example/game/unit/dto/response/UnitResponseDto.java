@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +23,7 @@ public class UnitResponseDto {
     private int dp;
     private Long axisX;
     private Long axisY;
+    private LocalDateTime actionTime;
 
     public void makeUnknown() {
         this.name = "";
@@ -28,6 +31,7 @@ public class UnitResponseDto {
         this.hp = -1;
         this.ap = -1;
         this.dp = -1;
+        this.actionTime = null;
     }
 
     public UnitResponseDto(Unit unit) {
@@ -40,5 +44,6 @@ public class UnitResponseDto {
         this.dp = unit.getDp();
         this.axisX = unit.getAxisX();
         this.axisY = unit.getAxisY();
+        this.actionTime = unit.getActionTime();
     }
 }
