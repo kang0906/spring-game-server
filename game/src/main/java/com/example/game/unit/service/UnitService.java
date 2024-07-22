@@ -113,21 +113,21 @@ public class UnitService {
         }
 
         // 이동가능한 위치인지(이동 거리) 확인
-
         int x = (int) (long) requestDto.getX();
         int y = (int) (long) requestDto.getY();
-
         x = Math.abs(x);
         y = Math.abs(y);
-
         log.info("checkUnitRange : ({}, {})", x, y);
-
         if (1 < x + y) {
             throw new GlobalException(VALIDATION_FAIL);
         }
 
         // 유닛이 요청한 유저의 소유인지 확인
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
+
+        // 유닛 행동 쿨타임 확인
+        unit.checkActionTime(Integer.parseInt(messageSource.getMessage("game.unit.cooldown", null, null)));
+        log.info("game.unit.cooldown : ({})", messageSource.getMessage("game.unit.cooldown", null, null));
 
         // 맵 크기 제한 확인
         long mapSize = Long.parseLong(messageSource.getMessage("game.map.size", null, null));
@@ -157,6 +157,7 @@ public class UnitService {
     public UnitAttackResponseDto unitAttack(UnitAttackRequestDto requestDto, User requestUser) {
 
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
+        unit.checkActionTime(Integer.parseInt(messageSource.getMessage("game.unit.cooldown", null, null)));
 
         Unit targetUnit = unitRepository.findById(requestDto.getTargetId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
@@ -168,6 +169,7 @@ public class UnitService {
 
         // 공격 수행
         targetUnit.takeAttackFrom(unit);
+        unit.updateActionTime();
 
         if (targetUnit.getHp() <= 0) {
             log.info("unit {} deleted(owner {})", targetUnit.getUnitId(), targetUnit.getUser().getUserId());

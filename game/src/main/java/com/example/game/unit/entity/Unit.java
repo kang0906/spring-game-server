@@ -1,6 +1,8 @@
 package com.example.game.unit.entity;
 
 import com.example.game.common.entity.BaseEntity;
+import com.example.game.common.exception.ErrorCode;
+import com.example.game.common.exception.GlobalException;
 import com.example.game.user.entity.User;
 import com.example.game.world.entity.WorldMap;
 import jakarta.persistence.*;
@@ -45,6 +47,7 @@ public class Unit extends BaseEntity {
         worldMap = destination;
         axisX = destination.getAxisX();
         axisY = destination.getAxisY();
+        updateActionTime();
     }
 
     public void takeAttackFrom(Unit unit) {
@@ -79,5 +82,11 @@ public class Unit extends BaseEntity {
 
     public void updateActionTime() {
         this.actionTime = LocalDateTime.now();
+    }
+
+    public void checkActionTime(int coolDownTimeMinutes) {
+        if (actionTime.isAfter(LocalDateTime.now().minusMinutes(coolDownTimeMinutes))) {
+           throw new GlobalException(ErrorCode.NEED_COOL_DOWN_ERROR);
+        }
     }
 }
