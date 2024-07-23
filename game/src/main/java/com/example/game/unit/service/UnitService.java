@@ -157,6 +157,8 @@ public class UnitService {
     public UnitAttackResponseDto unitAttack(UnitAttackRequestDto requestDto, User requestUser) {
 
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
+
+        log.info("game.unit.cooldown : ({})", messageSource.getMessage("game.unit.cooldown", null, null));
         unit.checkActionTime(Integer.parseInt(messageSource.getMessage("game.unit.cooldown", null, null)));
 
         Unit targetUnit = unitRepository.findById(requestDto.getTargetId())

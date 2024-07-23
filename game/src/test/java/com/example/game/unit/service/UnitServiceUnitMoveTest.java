@@ -146,6 +146,33 @@ class UnitServiceUnitMoveTest {
                 .hasMessage(ErrorCode.CANT_EDIT.getMessage());
     }
 
+    @DisplayName("유닛 쿨타임이 지나지 않았을 경우 예외가 발생한다.")
+    @Test
+    void unitMoveCoolDownTimeExceptionTest() {
+        // given
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 1L));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user);
+
+        // when then
+        assertThatThrownBy(() -> unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ErrorCode.NEED_COOL_DOWN_ERROR.getMessage());
+    }
+
+    @DisplayName("유닛 쿨타임이 경계값일 때 유닛을 정상적으로 이동한다.")
+    @Test
+    void unitMoveCoolDownTimeTest() {   // unit.checkActionTime() 매개변수를 음수로 설정하여 테스트 진행
+        // given
+        User user = userRepository.save(new User("testUser", null, "testUserName", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 1L));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
+
+        // when then
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user);
+        unit.checkActionTime(0);
+    }
 
 
 }

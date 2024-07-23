@@ -3,6 +3,7 @@ package com.example.game.unit.service;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.unit.dto.request.UnitAttackRequestDto;
+import com.example.game.unit.dto.request.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -172,5 +173,29 @@ class UnitServiceUnitAttackTest {
         assertThatThrownBy(() -> unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user))
                 .isInstanceOf(GlobalException.class)
                 .hasMessage(ErrorCode.FRIENDLY_FIRE_NOT_ALLOWED.getMessage());
+    }
+
+    @DisplayName("유닛 쿨타임이 지나지 않았을 경우 예외가 발생한다.")
+    @Test
+    void unitMoveCoolDownTimeExceptionTest() {
+        // given
+        User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
+        WorldMap worldMap1 = worldMapRepository.save(new WorldMap("", -1L, -2L));
+        Unit unit1 = unitRepository.save(
+                new Unit(user, worldMap1, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
+
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap2 = worldMapRepository.save(
+                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
+
+        Unit unit2 = unitRepository.save(
+                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getAp() + 1, INFANTRY.getAp(), INFANTRY.getDp()));
+
+        unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user);
+
+        // when then
+        assertThatThrownBy(() -> unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user))
+                .isInstanceOf(GlobalException.class)
+                .hasMessage(ErrorCode.NEED_COOL_DOWN_ERROR.getMessage());
     }
 }
