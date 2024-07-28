@@ -18,12 +18,12 @@ public class GameSystemValue {
     private Long gameSystemValueId;
 
     private String property;
-    private String value;
+    private String gameSystemValue;
     private String description;
 
-    public GameSystemValue(String property, String value, String description) {
+    public GameSystemValue(String property, String gameSystemValue, String description) {
         this.property = property;
-        this.value = value;
+        this.gameSystemValue = gameSystemValue;
         this.description = description;
     }
 }
