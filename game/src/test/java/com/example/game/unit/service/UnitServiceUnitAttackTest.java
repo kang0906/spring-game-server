@@ -2,6 +2,9 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
+import com.example.game.system.value.entity.GameSystemValue;
+import com.example.game.system.value.repository.GameSystemValueRepository;
+import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.dto.request.UnitAttackRequestDto;
 import com.example.game.unit.dto.request.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
@@ -10,6 +13,8 @@ import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +41,16 @@ class UnitServiceUnitAttackTest {
     private UnitRepository unitRepository;
     @Autowired
     private WorldMapRepository worldMapRepository;
+
+    @Autowired
+    private GameSystemValueRepository gameSystemValueRepository;
+
+    @BeforeEach
+    void beforeAll() {
+        gameSystemValueRepository.save(new GameSystemValue("game.user.new.map.clear.size", "100", ""));
+        gameSystemValueRepository.save(new GameSystemValue("game.unit.cooldown", "30", ""));
+        gameSystemValueRepository.save(new GameSystemValue("game.map.size", "25", ""));
+    }
 
     @DisplayName("유닛을 정상적으로 공격한다.")
     @Test

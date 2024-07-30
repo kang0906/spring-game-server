@@ -5,6 +5,7 @@ import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.facility.service.FacilityService;
+import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
@@ -34,7 +35,7 @@ public class WorldMapService {
     private final UnitRepository unitRepository;
     private final FacilityRepository facilityRepository;
     private final FacilityService facilityService;
-    private final MessageSource messageSource;
+    private final GameSystemValueService gameSystemValueService;
 
     @Transactional
     public WorldMapLoadResponseDto loadWorldMap(User user, WorldMapLoadRequestDto requestDto) {
@@ -84,8 +85,8 @@ public class WorldMapService {
     }
 
     public WorldMap findSpawnPosition(String userId) {
-        Long maxMapSize = Long.parseLong(messageSource.getMessage("game.map.size", null, null));
-        int mapClearSize = Integer.parseInt(messageSource.getMessage("game.user.new.map.clear.size", null, null));
+        Long maxMapSize = gameSystemValueService.getGameSystemValueByPropertyParseLong("game.map.size");
+        int mapClearSize =  gameSystemValueService.getGameSystemValueByPropertyParseInt("game.user.new.map.clear.size");
         log.info("");
 
         Random random = new Random();
@@ -114,7 +115,7 @@ public class WorldMapService {
 
     public WorldMapInfoDto getWorldMapInfo() {
         return new WorldMapInfoDto(
-                Long.parseLong(messageSource.getMessage("game.map.size", null, null))
+                gameSystemValueService.getGameSystemValueByPropertyParseLong("game.map.size")
         );
     }
 }

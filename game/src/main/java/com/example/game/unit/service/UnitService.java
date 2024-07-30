@@ -5,6 +5,7 @@ import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
+import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.dto.request.UnitAttackRequestDto;
 import com.example.game.unit.dto.request.UnitItemMoveRequestDto;
 import com.example.game.unit.dto.request.UnitMoveRequestDto;
@@ -43,7 +44,7 @@ public class UnitService {
     private final UnitItemRepository unitItemRepository;
     private final FacilityRepository facilityRepository;
     private final FacilityItemRepository facilityItemRepository;
-    private final MessageSource messageSource;
+    private final GameSystemValueService gameSystemValueService;
 
     public UnitDetailResponseDto unitItemList(User user, Long unitId) {
 
@@ -126,11 +127,11 @@ public class UnitService {
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
 
         // 유닛 행동 쿨타임 확인
-        unit.checkActionTime(Integer.parseInt(messageSource.getMessage("game.unit.cooldown", null, null)));
-        log.info("game.unit.cooldown : ({})", messageSource.getMessage("game.unit.cooldown", null, null));
+        unit.checkActionTime(gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
+        log.info("game.unit.cooldown : ({})", gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
 
         // 맵 크기 제한 확인
-        long mapSize = Long.parseLong(messageSource.getMessage("game.map.size", null, null));
+        long mapSize = gameSystemValueService.getGameSystemValueByPropertyParseLong("game.map.size");
         if (Math.abs(unit.getAxisX() + requestDto.getX()) > mapSize
                 || Math.abs(unit.getAxisY() + requestDto.getY()) > mapSize ) {
             throw new GlobalException(OUT_OF_MAP_RANGE);
@@ -158,8 +159,8 @@ public class UnitService {
 
         Unit unit = checkUnitOwner(requestDto.getUnitId(), requestUser);
 
-        log.info("game.unit.cooldown : ({})", messageSource.getMessage("game.unit.cooldown", null, null));
-        unit.checkActionTime(Integer.parseInt(messageSource.getMessage("game.unit.cooldown", null, null)));
+        log.info("game.unit.cooldown : ({})", gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
+        unit.checkActionTime(gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
 
         Unit targetUnit = unitRepository.findById(requestDto.getTargetId())
                 .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
