@@ -54,7 +54,7 @@ public class WorldMapService {
         WorldMapLoadResponseDto data = new WorldMapLoadResponseDto(
                 user.getUserId(),
                 allUnitByAxisBetween.stream()
-                        .map(UnitResponseDto::new)
+                        .map(unit -> new UnitResponseDto(unit, gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown")))
                         .toList(),
                 allFacilityByAxisBetween.stream()
                         .map(FacilityResponseDto::new)

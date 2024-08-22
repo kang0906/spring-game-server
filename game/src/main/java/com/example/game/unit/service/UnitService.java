@@ -59,7 +59,7 @@ public class UnitService {
 
 
         return new UnitDetailResponseDto(
-                new UnitResponseDto(unit),
+                new UnitResponseDto(unit, gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown")),
                 unitItemList
                         .stream()
                         .map(ItemResponseDto::new)
@@ -128,7 +128,6 @@ public class UnitService {
 
         // 유닛 행동 쿨타임 확인
         unit.checkActionTime(gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
-        log.info("game.unit.cooldown : ({})", gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown"));
 
         // 맵 크기 제한 확인
         long mapSize = gameSystemValueService.getGameSystemValueByPropertyParseLong("game.map.size");
@@ -179,7 +178,11 @@ public class UnitService {
             unitRepository.delete(targetUnit);
         }
 
-        return new UnitAttackResponseDto(new UnitResponseDto(unit), new UnitResponseDto(targetUnit));
+        int cooldown = gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown");
+        return new UnitAttackResponseDto(
+                new UnitResponseDto(unit, cooldown),
+                new UnitResponseDto(targetUnit, cooldown)
+        );
     }
 
     private void checkFriendlyFire(Unit unit, Unit targetUnit) {

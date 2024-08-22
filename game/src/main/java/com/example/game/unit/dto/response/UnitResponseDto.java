@@ -34,7 +34,7 @@ public class UnitResponseDto {
         this.actionTime = null;
     }
 
-    public UnitResponseDto(Unit unit) {
+    public UnitResponseDto(Unit unit, int cooldown) {
         this.unitId = unit.getUnitId();
         this.userId = unit.getUser().getUserId();
         this.name = unit.getName();
@@ -44,6 +44,6 @@ public class UnitResponseDto {
         this.dp = unit.getDp();
         this.axisX = unit.getAxisX();
         this.axisY = unit.getAxisY();
-        this.actionTime = unit.getActionTime();
+        this.actionTime = unit.getActionTime().plusMinutes(cooldown);
     }
 }

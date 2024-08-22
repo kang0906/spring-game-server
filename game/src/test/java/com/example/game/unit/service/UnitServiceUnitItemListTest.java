@@ -6,6 +6,8 @@ import com.example.game.facility.entity.FacilityType;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.item.entity.ItemType;
+import com.example.game.system.value.entity.GameSystemValue;
+import com.example.game.system.value.repository.GameSystemValueRepository;
 import com.example.game.unit.dto.response.UnitDetailResponseDto;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitItem;
@@ -16,6 +18,7 @@ import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,15 @@ class UnitServiceUnitItemListTest {
     private UnitItemRepository unitItemRepository;
     @Autowired
     private FacilityItemRepository facilityItemRepository;
+    @Autowired
+    private GameSystemValueRepository gameSystemValueRepository;
+
+    @BeforeEach
+    void beforeAll() {
+        gameSystemValueRepository.save(new GameSystemValue("game.user.new.map.clear.size", "100", ""));
+        gameSystemValueRepository.save(new GameSystemValue("game.unit.cooldown", "30", ""));
+        gameSystemValueRepository.save(new GameSystemValue("game.map.size", "25", ""));
+    }
 
     @DisplayName("유닛의 아이템 목록을 조회한다.")
     @Test
