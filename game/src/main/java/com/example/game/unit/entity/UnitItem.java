@@ -24,4 +24,8 @@ public class UnitItem extends Item {
         super(itemType, quantity);
         this.unit = unit;
     }
+
+    public void changeOwner(Unit unit) {
+        this.unit = unit;
+    }
 }

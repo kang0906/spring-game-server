@@ -2,26 +2,29 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
+import com.example.game.item.entity.ItemType;
 import com.example.game.system.value.entity.GameSystemValue;
 import com.example.game.system.value.repository.GameSystemValueRepository;
 import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.dto.request.UnitAttackRequestDto;
 import com.example.game.unit.dto.request.UnitMoveRequestDto;
 import com.example.game.unit.entity.Unit;
+import com.example.game.unit.entity.UnitItem;
+import com.example.game.unit.repository.UnitItemRepository;
 import com.example.game.unit.repository.UnitRepository;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.game.unit.entity.UnitType.INFANTRY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +44,10 @@ class UnitServiceUnitAttackTest {
     private UnitRepository unitRepository;
     @Autowired
     private WorldMapRepository worldMapRepository;
+    @Autowired
+    private UnitItemRepository unitItemRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private GameSystemValueRepository gameSystemValueRepository;
@@ -98,6 +105,49 @@ class UnitServiceUnitAttackTest {
         // then
         Unit findUnit = unitRepository.findById(unit2.getUnitId()).orElse(null);
         assertThat(findUnit).isNull();
+    }
+    
+    @DisplayName("공격을 받은 유닛이 아이템을 가지고 있고 체력이 0 이하가 되면 해당 유닛은 삭제된다.")
+    @Test
+    void unitAttackAndTargetDeleteThatTargetHavingItemTest() {
+        // given
+        User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
+        WorldMap worldMap1 = worldMapRepository.save(new WorldMap("", -1L, -2L));
+        Unit unit1 = unitRepository.save(
+                new Unit(user, worldMap1, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
+        unitItemRepository.save(new UnitItem(unit1, ItemType.STEEL, 100));
+
+
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap2 = worldMapRepository.save(
+                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
+
+        Unit unit2 = unitRepository.save(
+                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getAp(), INFANTRY.getAp(), INFANTRY.getDp()));
+        unitItemRepository.save(new UnitItem(unit2, ItemType.STEEL, 100));
+        unitItemRepository.save(new UnitItem(unit2, ItemType.FOOD, 100));
+
+        // when
+        unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user);
+
+        // then
+        Unit findUnit = unitRepository.findById(unit2.getUnitId()).orElse(null);
+        assertThat(findUnit).isNull();
+
+        List<UnitItem> allByUnit = unitItemRepository.findAllByUnit(unit1);
+        if (allByUnit.isEmpty()) {
+            Assertions.fail();
+        }
+        for (UnitItem unitItem : allByUnit) {
+            if (unitItem.getItemType().equals(ItemType.STEEL)) {
+                assertThat(unitItem.getQuantity()).isEqualTo(200);
+            } else if (unitItem.getItemType().equals(ItemType.FOOD)) {
+                assertThat(unitItem.getQuantity()).isEqualTo(100);
+            } else {
+                Assertions.fail();
+            }
+        }
+        entityManager.flush();
     }
 
     @DisplayName("유닛을 정상적으로 공격한다.")

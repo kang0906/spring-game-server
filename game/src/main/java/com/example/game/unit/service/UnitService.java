@@ -175,6 +175,18 @@ public class UnitService {
 
         if (targetUnit.getHp() <= 0) {
             log.info("unit {} deleted(owner {})", targetUnit.getUnitId(), targetUnit.getUser().getUserId());
+
+            List<UnitItem> allByUnit = unitItemRepository.findAllByUnit(targetUnit);
+            for (UnitItem targetUnitItem : allByUnit) {
+                Optional<UnitItem> unitItem = unitItemRepository.findWithPessimisticLockByUnitAndItemType(unit, targetUnitItem.getItemType());
+                if (unitItem.isPresent()) {
+                    unitItem.get().addItem(targetUnitItem.getQuantity());
+                    unitItemRepository.delete(targetUnitItem);
+                }else {
+                    targetUnitItem.changeOwner(unit);
+                }
+            }
+
             unitRepository.delete(targetUnit);
         }
 
