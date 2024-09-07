@@ -81,7 +81,7 @@ public class Unit extends BaseEntity {
     }
 
     public void updateActionTime() {
-        this.actionTime = LocalDateTime.now();
+        this.actionTime = LocalDateTime.now().withNano(0);
     }
 
     public void checkActionTime(int coolDownTimeMinutes) {
