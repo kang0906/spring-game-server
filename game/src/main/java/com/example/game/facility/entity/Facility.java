@@ -63,4 +63,8 @@ public class Facility extends BaseEntity {
     public void updateProductionTime() {
         this.productionTime = LocalDateTime.now();
     }
+
+    public void changeUser(User user) {
+        this.user = user;
+    }
 }

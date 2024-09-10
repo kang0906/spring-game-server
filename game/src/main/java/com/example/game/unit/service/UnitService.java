@@ -151,6 +151,9 @@ public class UnitService {
 
         // 이동 수행
         unit.move(destination);
+
+        // 건물 점령
+        checkFacility(requestUser, destination);
     }
 
     @Transactional
@@ -224,5 +227,13 @@ public class UnitService {
         if (range < x + y) {
             throw new GlobalException(OUT_OF_RANGE);
         }
+    }
+
+    private void checkFacility(User user, WorldMap worldMap) {
+        Optional<Facility> byWorldMap = facilityRepository.findByWorldMap(worldMap);
+        if (byWorldMap.isEmpty() || byWorldMap.get().getUser().getUserId() == user.getUserId()) {
+            return;
+        }
+        byWorldMap.get().changeUser(user);
     }
 }

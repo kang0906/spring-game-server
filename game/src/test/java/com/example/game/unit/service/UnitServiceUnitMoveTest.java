@@ -11,6 +11,7 @@ import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
 import com.example.game.world.entity.WorldMap;
 import com.example.game.world.repository.WorldMapRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -185,6 +186,17 @@ class UnitServiceUnitMoveTest {
         // when then
         unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user);
         unit.checkActionTime(0);
+    }
+
+    @DisplayName("유닛 이동 및 시설 점령 테스트")
+    @Test
+    void unitMoveAndCaptureFacilityTest() {
+        // given
+
+        // when
+
+        // then
+        Assertions.fail("구현");
     }
 
 
