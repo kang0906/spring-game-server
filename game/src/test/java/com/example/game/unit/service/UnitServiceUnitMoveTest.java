@@ -2,6 +2,9 @@ package com.example.game.unit.service;
 
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
+import com.example.game.facility.entity.Facility;
+import com.example.game.facility.entity.FacilityType;
+import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.system.value.entity.GameSystemValue;
 import com.example.game.system.value.repository.GameSystemValueRepository;
 import com.example.game.unit.dto.request.UnitMoveRequestDto;
@@ -37,6 +40,8 @@ class UnitServiceUnitMoveTest {
     private UnitRepository unitRepository;
     @Autowired
     private WorldMapRepository worldMapRepository;
+    @Autowired
+    private FacilityRepository facilityRepository;
 
     @Autowired
     private GameSystemValueRepository gameSystemValueRepository;
@@ -192,11 +197,24 @@ class UnitServiceUnitMoveTest {
     @Test
     void unitMoveAndCaptureFacilityTest() {
         // given
+        User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
+        WorldMap worldMap = worldMapRepository.save(new WorldMap("", 1L, 2L));
+        Unit unit = unitRepository.save(new Unit(user, worldMap, "", INFANTRY));
+
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap2 = worldMapRepository.save(new WorldMap("", 2L, 2L));
+        Facility facility = facilityRepository.save(new Facility(user2, worldMap2, "", FacilityType.FARM));
 
         // when
+        unitService.unitMove(new UnitMoveRequestDto(unit.getUnitId(), 1L, 0L), user);
 
         // then
-        Assertions.fail("구현");
+        Unit findUnit = unitRepository.findById(unit.getUnitId()).orElseThrow(() -> new RuntimeException("테스트 실패"));
+        assertThat(findUnit.getWorldMap().getAxisX()).isEqualTo(2L);
+        assertThat(findUnit.getWorldMap().getAxisY()).isEqualTo(2L);
+
+        Facility facilityFind = facilityRepository.findByWorldMap(worldMap2).orElseThrow(() -> new RuntimeException("테스트 실패"));
+        assertThat(facilityFind.getUser().getUserId()).isEqualTo(user.getUserId());
     }
 
 
