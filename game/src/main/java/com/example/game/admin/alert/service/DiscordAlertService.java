@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -26,13 +27,17 @@ public class DiscordAlertService implements AlertService{
         String body = "{ \"content\" : \"" + alertLevel + msg + "\"}";
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                discordWebHockUrl,
-                HttpMethod.POST,
-                new HttpEntity<>(body, headers),
-                String.class
-        );
-        log.info("Discord Message Send Result(response) {}",response.getBody());
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    discordWebHockUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(body, headers),
+                    String.class
+            );
+            log.info("Discord Message Send Result(response) {}",response.getBody());
+        } catch (ResourceAccessException e) {
+            log.warn("!!!http request Exception!!! message : ({})", e.getMessage());
+        }
 
         return "success";
     }
