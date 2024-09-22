@@ -27,7 +27,6 @@ public class UnitResponseDto {
 
     public void makeUnknown() {
         this.name = "";
-        this.type = null;
         this.hp = -1;
         this.ap = -1;
         this.dp = -1;
