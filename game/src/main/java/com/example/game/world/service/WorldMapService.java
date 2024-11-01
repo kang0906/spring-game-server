@@ -51,10 +51,11 @@ public class WorldMapService {
 
         List<Unit> allUnitByAxisBetween = unitRepository.findAllByAxisBetween(requestDto.getX(), requestDto.getY(), xRange, yRange);
 
+        int coolDown = gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown");
         WorldMapLoadResponseDto data = new WorldMapLoadResponseDto(
                 user.getUserId(),
                 allUnitByAxisBetween.stream()
-                        .map(unit -> new UnitResponseDto(unit, gameSystemValueService.getGameSystemValueByPropertyParseInt("game.unit.cooldown")))
+                        .map(unit -> new UnitResponseDto(unit, coolDown))
                         .toList(),
                 allFacilityByAxisBetween.stream()
                         .map(FacilityResponseDto::new)
