@@ -47,7 +47,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String jwtToken = getJwtToken(jwtHeader);
         String email = jwtTokenUtils.extractUserEmail(jwtToken);
-        checkUser(email);
+        checkUser(request, email);
         chain.doFilter(request, response);
     }
 
@@ -65,9 +65,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         return jwtHeader.replace(TOKEN_PREFIX, "");
     }
 
-    public void checkUser(String email) {
+    public void checkUser(HttpServletRequest request, String email) {
         if (email != null) {
             User user = userRepository.findByEmail(email).orElse(null);
+            request.setAttribute("userId", user.getUserId());
 //            user.setVisitedTime(LocalDateTime.now());
 //            userRepository.save(user);
             UserDetails userDetails = new UserDetailsImpl(user);

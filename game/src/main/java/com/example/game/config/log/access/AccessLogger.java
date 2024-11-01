@@ -34,6 +34,7 @@ public class AccessLogger {
         String remoteHost = getClientIP(request);
         String method = request.getMethod();
         String url = getURL(request);
+        Long userId = (Long)request.getAttribute("userId");
         int status = response.getStatus();
 
         StringBuilder sb = new StringBuilder();
@@ -63,6 +64,13 @@ public class AccessLogger {
                     .append("\"").append("status").append("\"")
                     .append(":")
                     .append("\"").append(status).append("\"");
+        }
+        if (userId != null) {
+            sb
+                    .append(",")
+                    .append("\"").append("userId").append("\"")
+                    .append(":")
+                    .append("\"").append(userId).append("\"");
         }
         if (elapsed != 0) {
             sb
