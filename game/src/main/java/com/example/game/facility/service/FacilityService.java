@@ -145,11 +145,11 @@ public class FacilityService {
             return;
         }
         Optional<FacilityItem> facilitySteel = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.STEEL);
-        Optional<FacilityItem> facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD);
-
         if(facilitySteel.isEmpty() || facilitySteel.get().getQuantity() < unitType.getSteelCostToCreate()) {
             return;
         }
+
+        Optional<FacilityItem> facilityFood = facilityItemRepository.findWithPessimisticLockByFacilityAndItemType(facility, ItemType.FOOD);
         if(facilityFood.isEmpty() || facilityFood.get().getQuantity() < unitType.getFoodCostToCreate()) {
             return;
         }
