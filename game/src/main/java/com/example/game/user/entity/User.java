@@ -31,6 +31,10 @@ public class User {
     private Long lastLocationX;
     private Long lastLocationY;
 
+    private String emblem;
+    private int killCount;
+    private int killPoint;
+
 
     public User(String email, Long kakaoId, String username, String password) {
         this.email = email;
@@ -39,6 +43,16 @@ public class User {
         this.password = password;
         this.joinDate = LocalDateTime.now();
         this.lastAccessDate = LocalDateTime.now();
+    }
+
+    public User(String email, Long kakaoId, String username, String password, String emblem) {
+        this.email = email;
+        this.kakaoId = kakaoId;
+        this.username = username;
+        this.password = password;
+        this.joinDate = LocalDateTime.now();
+        this.lastAccessDate = LocalDateTime.now();
+        this.emblem = emblem;
     }
 
     public void setLastLocation(Long x, Long y) {

@@ -5,13 +5,15 @@ import lombok.Getter;
 
 @Getter
 public class MyInfoResponseDto {
-    private String email;
-    private Long kakaoId;
     private String username;
+    private String emblem;
+    private int killCount;
+    private int killPoint;
 
     public MyInfoResponseDto(User user) {
-        this.email = user.getEmail();
         this.username = user.getUsername();
-        this.kakaoId = user.getKakaoId();
+        this.emblem = user.getEmblem();
+        this.killCount = user.getKillCount();
+        this.killPoint = user.getKillPoint();
     }
 }

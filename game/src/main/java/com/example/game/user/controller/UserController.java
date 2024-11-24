@@ -23,7 +23,7 @@ public class UserController {
         userService.signup(requestLogin);
     }
 
-    @GetMapping("/mypage/{userId}")
+    @GetMapping("/user/info")
     public ResponseDto<MyInfoResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(userService.getMyInfo(userDetails.getUser()));
     }

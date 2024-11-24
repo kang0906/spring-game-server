@@ -9,6 +9,8 @@ import com.example.game.facility.entity.FacilityType;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.item.entity.ItemType;
+import com.example.game.system.value.entity.GameSystemValue;
+import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.entity.Unit;
 import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitRepository;
@@ -39,13 +41,21 @@ public class UserService {
     private final FacilityRepository facilityRepository;
     private final UnitRepository unitRepository;
     private final FacilityItemRepository facilityItemRepository;
+    private final GameSystemValueService gameSystemValueService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public void signup(RequestLogin requestLogin) {
         Optional<User> findUser = userRepository.findByEmail(requestLogin.getEmail());
         if (!findUser.isPresent()) {
-            User user = new User(requestLogin.getEmail(), null, requestLogin.getUsername(), bCryptPasswordEncoder.encode(requestLogin.getPassword()));
+            String defaultEmblem = gameSystemValueService.getGameSystemValueByProperty("game.user.new.emblem");
+            User user = new User(
+                    requestLogin.getEmail(),
+                    null,
+                    requestLogin.getUsername(),
+                    bCryptPasswordEncoder.encode(requestLogin.getPassword()),
+                    defaultEmblem
+            );
 
             WorldMap spawnPosition = worldMapService.findSpawnPosition(user.getEmail());
             user.setLastLocation(spawnPosition.getAxisX(), spawnPosition.getAxisY());
