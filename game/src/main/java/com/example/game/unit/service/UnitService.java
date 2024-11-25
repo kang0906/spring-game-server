@@ -177,7 +177,8 @@ public class UnitService {
         unit.updateActionTime();
 
         if (targetUnit.getHp() <= 0) {
-            log.info("unit {} deleted(owner {})", targetUnit.getUnitId(), targetUnit.getUser().getUserId());
+            log.info("unit {} deleted(owner {}) by unit {}", targetUnit.getUnitId(), targetUnit.getUser().getUserId(), unit.getUnitId());
+            requestUser.addKill();
 
             List<UnitItem> allByUnit = unitItemRepository.findAllByUnit(targetUnit);
             for (UnitItem targetUnitItem : allByUnit) {

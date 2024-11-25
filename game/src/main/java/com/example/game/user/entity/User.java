@@ -58,6 +58,10 @@ public class User {
     public void setLastLocation(Long x, Long y) {
         this.lastLocationX = x;
         this.lastLocationY = y;
+    }
 
+    public void addKill() {
+        killCount++;
+        killPoint++;
     }
 }

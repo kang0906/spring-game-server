@@ -106,6 +106,18 @@ class UnitServiceUnitAttackTest {
         Unit findUnit = unitRepository.findById(unit2.getUnitId()).orElse(null);
         assertThat(findUnit).isNull();
     }
+
+    @DisplayName("공격 당한 유닛이 죽으면 죽인 유저의 킬포인트가 증가한다.")
+    @Test
+    void addKillPointTest() {
+        // given
+
+        // when
+
+        // then
+
+    }
+
     
     @DisplayName("공격을 받은 유닛이 아이템을 가지고 있고 체력이 0 이하가 되면 해당 유닛은 삭제된다.")
     @Test
