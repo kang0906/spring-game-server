@@ -111,10 +111,28 @@ class UnitServiceUnitAttackTest {
     @Test
     void addKillPointTest() {
         // given
+        User user = userRepository.save(new User("testUser1", null, "testUserName1", ""));
+        WorldMap worldMap1 = worldMapRepository.save(new WorldMap("", -1L, -2L));
+        Unit unit1 = unitRepository.save(
+                new Unit(user, worldMap1, "", INFANTRY, INFANTRY.getMaxHp(), INFANTRY.getAp(), INFANTRY.getDp()));
+
+        User user2 = userRepository.save(new User("testUser2", null, "testUserName2", ""));
+        WorldMap worldMap2 = worldMapRepository.save(
+                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
+
+        Unit unit2 = unitRepository.save(
+                new Unit(user2, worldMap2, "", INFANTRY, INFANTRY.getAp(), INFANTRY.getAp(), INFANTRY.getDp()));
+
+        WorldMap worldMap3 = worldMapRepository.save(
+                new WorldMap("", worldMap1.getAxisX() + 1, worldMap1.getAxisY()));
 
         // when
+        unitService.unitAttack(new UnitAttackRequestDto(unit1.getUnitId(), unit2.getUnitId()), user);
 
         // then
+        User findUser = userRepository.findById(user.getUserId()).orElse(null);
+        assertThat(findUser.getKillCount()).isEqualTo(1);
+        assertThat(findUser.getKillPoint()).isEqualTo(1);
 
     }
 
