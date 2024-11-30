@@ -26,4 +26,8 @@ public class GameSystemValue {
         this.gameSystemValue = gameSystemValue;
         this.description = description;
     }
+
+    public void changeGameSystemValue(String newGameSystemValue) {
+        this.gameSystemValue = newGameSystemValue;
+    }
 }

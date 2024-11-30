@@ -24,7 +24,7 @@ public class DiscordAlertService implements AlertService{
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/json");
 
-        String body = "{ \"content\" : \"" + alertLevel + msg + "\"}";
+        String body = "{ \"content\" : \"[" + alertLevel + "] " + msg + "\"}";
 
         RestTemplate restTemplate = new RestTemplate();
         try {

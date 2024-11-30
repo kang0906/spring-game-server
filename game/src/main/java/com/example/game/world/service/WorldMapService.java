@@ -1,5 +1,7 @@
 package com.example.game.world.service;
 
+import com.example.game.admin.alert.entity.AlertLevel;
+import com.example.game.admin.alert.service.AlertService;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
@@ -36,6 +38,7 @@ public class WorldMapService {
     private final FacilityRepository facilityRepository;
     private final FacilityService facilityService;
     private final GameSystemValueService gameSystemValueService;
+    private final AlertService alertService;
 
     @Transactional
     public WorldMapLoadResponseDto loadWorldMap(User user, WorldMapLoadRequestDto requestDto) {
@@ -107,7 +110,9 @@ public class WorldMapService {
 
             if (i == 5) {
                 log.warn("유저 [{}] 생성 위치 탐색 시도 5회 초과...", userId);
-                // todo : alert 발생
+                maxMapSize += gameSystemValueService.getGameSystemValueByPropertyParseLong("game.map.extend.size");
+                gameSystemValueService.changeGameSystemValue("game.map.size", maxMapSize.toString());
+                alertService.sendAlert(AlertLevel.ERROR, "맵확장 동작 : 맵 사이즈=" + maxMapSize + "\\n (유저 [" + userId + "] 생성 위치 탐색 시도 5회 초과...)");
             }
         }
 

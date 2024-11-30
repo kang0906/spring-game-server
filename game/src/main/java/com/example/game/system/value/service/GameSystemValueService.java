@@ -32,4 +32,9 @@ public class GameSystemValueService {
     public long getGameSystemValueByPropertyParseLong(String property) {
         return Long.parseLong(getGameSystemValueByProperty(property));
     }
+
+    public void changeGameSystemValue(String property, String newGameSystemValue) {
+        GameSystemValue byProperty = gameSystemValueRepository.findByProperty(property);
+        byProperty.changeGameSystemValue(newGameSystemValue);
+    }
 }
