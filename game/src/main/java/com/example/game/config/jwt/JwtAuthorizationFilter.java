@@ -69,8 +69,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if (email != null) {
             User user = userRepository.findByEmail(email).orElse(null);
             request.setAttribute("userId", user.getUserId());
-//            user.setVisitedTime(LocalDateTime.now());
-//            userRepository.save(user);
+            user.setLastAccessDate();
+            userRepository.save(user);
             UserDetails userDetails = new UserDetailsImpl(user);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null,

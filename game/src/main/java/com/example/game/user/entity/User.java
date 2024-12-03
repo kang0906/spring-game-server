@@ -64,4 +64,8 @@ public class User {
         killCount++;
         killPoint++;
     }
+
+    public void setLastAccessDate() {
+        this.lastAccessDate = LocalDateTime.now();
+    }
 }
