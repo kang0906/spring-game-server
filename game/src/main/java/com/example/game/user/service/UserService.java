@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.example.game.common.exception.ErrorCode.DATA_NOT_FOUND;
 import static com.example.game.facility.entity.FacilityType.HEADQUARTERS;
 import static com.example.game.unit.entity.UnitType.*;
 
@@ -52,7 +53,7 @@ public class UserService {
             User user = new User(
                     requestLogin.getEmail(),
                     null,
-                    requestLogin.getUsername(),
+                    "NOOB",
                     bCryptPasswordEncoder.encode(requestLogin.getPassword()),
                     defaultEmblem
             );
@@ -70,6 +71,12 @@ public class UserService {
 
     public MyInfoResponseDto getMyInfo(User user) {
         return new MyInfoResponseDto(user);
+    }
+
+    @Transactional
+    public void changeUsername(User user, String newUsername) {
+        User findUser = userRepository.findById(user.getUserId()).orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        findUser.changeUsername(newUsername);
     }
 
     public User setNewUser(User newUser, WorldMap spawnPosition) {

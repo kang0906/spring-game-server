@@ -4,6 +4,7 @@ import com.example.game.common.dto.ResponseDto;
 import com.example.game.config.UserDetailsImpl;
 import com.example.game.user.dto.MyInfoResponseDto;
 import com.example.game.user.dto.RequestLogin;
+import com.example.game.user.dto.RequestUsernameChange;
 import com.example.game.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,11 @@ public class UserController {
     @GetMapping("/user/info")
     public ResponseDto<MyInfoResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseDto.success(userService.getMyInfo(userDetails.getUser()));
+    }
+
+    @PostMapping("/user/name")
+    public ResponseDto<String> changeUsername(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody @Valid RequestUsernameChange requestDto) {
+        userService.changeUsername(userDetails.getUser(), requestDto.getUsername());
+        return ResponseDto.success("success");
     }
 }

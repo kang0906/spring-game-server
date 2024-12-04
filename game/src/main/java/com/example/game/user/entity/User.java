@@ -68,4 +68,8 @@ public class User {
     public void setLastAccessDate() {
         this.lastAccessDate = LocalDateTime.now();
     }
+
+    public void changeUsername(String username) {
+        this.username = username;
+    }
 }
