@@ -1,20 +1,16 @@
 package com.example.game.user.service;
 
-import com.example.game.common.dto.ResponseDto;
 import com.example.game.common.exception.ErrorCode;
 import com.example.game.common.exception.GlobalException;
 import com.example.game.facility.entity.Facility;
 import com.example.game.facility.entity.FacilityItem;
-import com.example.game.facility.entity.FacilityType;
 import com.example.game.facility.repository.FacilityItemRepository;
 import com.example.game.facility.repository.FacilityRepository;
 import com.example.game.item.entity.ItemType;
-import com.example.game.system.value.entity.GameSystemValue;
 import com.example.game.system.value.service.GameSystemValueService;
 import com.example.game.unit.entity.Unit;
-import com.example.game.unit.entity.UnitType;
 import com.example.game.unit.repository.UnitRepository;
-import com.example.game.user.dto.MyInfoResponseDto;
+import com.example.game.user.dto.UserInfoResponseDto;
 import com.example.game.user.dto.RequestLogin;
 import com.example.game.user.entity.User;
 import com.example.game.user.repository.UserRepository;
@@ -69,8 +65,8 @@ public class UserService {
         }
     }
 
-    public MyInfoResponseDto getMyInfo(User user) {
-        return new MyInfoResponseDto(user);
+    public UserInfoResponseDto getMyInfo(User user) {
+        return new UserInfoResponseDto(user);
     }
 
     @Transactional
@@ -94,5 +90,11 @@ public class UserService {
         unitRepository.save(new Unit(newUser, worldMapService.getOrMakeWorldMap(x, y - 1), CAVALRY.getName(), CAVALRY));
 
         return newUser;
+    }
+
+    public UserInfoResponseDto findUserInfo(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        return new UserInfoResponseDto(user);
     }
 }
