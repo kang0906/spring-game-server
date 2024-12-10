@@ -75,6 +75,12 @@ public class UserService {
         findUser.changeUsername(newUsername);
     }
 
+    @Transactional
+    public void changeUserEmblem(User user, String newEmblem) {
+        User findUser = userRepository.findById(user.getUserId()).orElseThrow(() -> new GlobalException(DATA_NOT_FOUND));
+        findUser.changeUserEmblem(newEmblem);
+    }
+
     public User setNewUser(User newUser, WorldMap spawnPosition) {
         Facility facility = new Facility(newUser, spawnPosition, HEADQUARTERS.getName(), HEADQUARTERS);
         facilityRepository.save(facility);

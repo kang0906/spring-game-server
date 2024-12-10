@@ -72,4 +72,8 @@ public class User {
     public void changeUsername(String username) {
         this.username = username;
     }
+
+    public void changeUserEmblem(String emblem) {
+        this.emblem = emblem;
+    }
 }
