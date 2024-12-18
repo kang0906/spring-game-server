@@ -47,9 +47,7 @@ public class ServerReceiver extends Thread {
                 return ;
             }
             while (in != null) {
-                byte[] b = new byte[1024];
-                int length = in.read(b);
-                sendToAll(b, length);
+                sendToAll(in.readUTF());
             }
         } catch (SocketException e) {
             log.warn("SocketException : {}", e.getMessage());
@@ -64,14 +62,14 @@ public class ServerReceiver extends Thread {
         }
     }
 
-    void sendToAll(byte[] msg, int length) {
-        log.warn("msg : {}", new String(msg, 0, length));
+    void sendToAll(String msg) {
+        log.info("msg : {}", msg);
         Iterator it = clients.keySet().iterator();
 
         while (it.hasNext()) {
             try {
                 DataOutputStream out = clients.get(it.next()).getOut();
-                out.write(msg, 0, length);
+                out.writeUTF(msg);
             } catch (IOException e) {
                 log.warn("IOException : {}", e.getMessage());
             }
